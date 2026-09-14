@@ -23,8 +23,9 @@ Six findings follow.
 crude and petroleum-liquids transit fell from 21.6 mb/d (4Q25) to 4.9 mb/d (2Q26), a 77% collapse.
 But Gulf crude *exports* — counting barrels that leave via bypass pipelines — held near 13–15.5
 mb/d, a 33–50% loss. The distinction matters: the strait is closed, the Gulf is not sealed. That
-cushion is now eroding. The Saudi East–West pipeline, which had been rerouting ~5 mb/d, **shut on
-2026-09-11**; talks on shipping protection collapsed on 09-13. LNG is the harder hit: Qatar's H1
+cushion is now eroding. The Saudi East–West pipeline, which had been rerouting ~5 mb/d, was
+reported **shut on 2026-09-11** — though its status since is unconfirmed, and is the
+highest-value open question in the dataset; talks on shipping protection collapsed on 09-13. LNG is the harder hit: Qatar's H1
 cargo count fell from 509 to 18 (−96%).
 
 **2. Japan is more exposed structurally; China is more exposed in narrow chokepoints.** Japan
@@ -34,13 +35,20 @@ pipeline alternative. China sourced 36% via Hormuz, produces ~4.3 mb/d domestica
 Russian barrels overland. But China holds the most concentrated single dependency found anywhere
 in this study: **Iran supplied 60.4% of its methanol imports**.
 
-**3. Demand destruction has already happened — and most of it is supply-constrained, not
-price-induced.** This distinction is the analytical core of the report. Japanese refinery
-utilisation fell to 73.3%, naphtha crackers cut runs, and force majeures were declared at named
-plants (Shell, CNOOC, Wanhua, Mitsubishi Chemical). That is **feedstock unavailable at any
-price** — no subsidy fixes it. Genuinely price-induced destruction is narrower: Japan's
-gas-to-coal switching in power is the clearest case. And one widely-cited datapoint should *not*
-be attributed to the war: China's 2026 road-fuel decline is majority-structural EV substitution.
+**3. Demand destruction has already happened, and in Japan most of it is supply-constrained
+rather than price-induced.** Japanese refinery utilisation fell to 73.3%, naphtha crackers cut
+runs, and force majeures were declared at named plants (Shell, CNOOC, Wanhua, Mitsubishi
+Chemical). That is **feedstock unavailable at any price** — no subsidy fixes it. The
+price-induced side is narrower, and in the data is essentially one phenomenon: Japan's
+gas-to-coal switching in power.
+
+This is a **Japan finding, and should not be read as a Japan-and-China one.** China has *no*
+quantified, realised, price-induced observation in the dataset: its entries are a full-year
+forecast and one low-confidence directional note. That is an absence of evidence, not evidence
+of absence. China's import collapse is also classified in the data as a *hybrid* —
+supply-constrained plus a price-induced buying strike — not purely supply-constrained. And one
+widely-cited datapoint should *not* be attributed to the war at all: China's 2026 road-fuel
+decline is majority-structural EV substitution.
 
 **4. The macro damage so far is real but contained.** Japan's Q2 2026 GDP grew just **+1.1%**
 annualised, with **private consumption contributing zero** — and the positive contribution came
@@ -77,12 +85,16 @@ is the thing that cannot be refinanced.
 | Flow | Pre-war | Current | Change |
 |---|---|---|---|
 | Hormuz crude + liquids transit | 21.6 mb/d (4Q25) | 4.9 mb/d (2Q26) | **−77%** |
-| Gulf crude exports (incl. bypass) | ~20–24 mb/d | 13–15.5 mb/d | −33% to −50% |
+| Gulf crude exports (incl. bypass) | ~20–24 mb/d | 13–15.5 mb/d | −33% to −50% [^a] |
 | Hormuz vessel transits | ~125/day | 7/day (09-09) | −94% |
 | Qatar LNG cargoes (H1) | 509 | 18 | **−96%** |
 | Qatar global LNG exports (Jan–Jul) | 48.2 Mt | 17.2 Mt | −64% |
 | Qatar → China LNG (Jan–Jul) | 11.0 Mt | 4.7 Mt | −58% |
 | Gulf diesel/gasoil net exports | — | 390 kb/d (Aug) | ~¼ of pre-war |
+
+[^a]: This range is not the min/max of the two cells beside it — it blends the IEA's and
+Kpler's own internally-paired baseline/current estimates. Subtracting the displayed endpoints
+gives −23% to −46% instead.
 
 **Bypass capacity is the swing factor, and it just got worse.** The Saudi East–West pipeline
 (7 mb/d nameplate) was moving ~5 mb/d until it **shut on 2026-09-11** after drone strikes; its
@@ -231,24 +243,39 @@ the tracker.
 |---|---|---|---|---|
 | De-escalation | 50% | $80 | −0.00pp / +0.04pp | +0.06pp / +0.03pp |
 | **Current grind (base)** | 7% | $100 | **−3.01pp / +2.49pp** | **−0.38pp / +1.06pp** |
-| Full closure | 2% | $145 | −4.54pp / +7.50pp | −0.74pp / +3.12pp |
-| Full closure, support withdrawn | 2% | $145 | −3.96pp / +8.50pp | −0.74pp / +3.52pp |
+| Full closure | 2% | $145 | −4.46pp / +7.50pp | −0.73pp / +3.12pp |
+| Full closure, support withdrawn | 2% | $145 | −3.91pp / +8.50pp | −0.74pp / +3.52pp |
 
 Two results are worth dwelling on.
 
 **Withdrawing price support improves GDP while worsening CPI.** For Japan under full closure,
-GDP goes from −4.54pp to −3.96pp while CPI rises from +7.50 to +8.50. Restoring the price signal
-roughly doubles voluntary conservation (69 → 172 kb/d) and cuts rationed demand (382 → 279 kb/d).
+GDP goes from −4.46pp to −3.91pp while CPI rises from +7.50 to +8.50. Restoring the price signal
+roughly doubles voluntary conservation (69 → 172 kb/d) and cuts rationed demand (387 → 284 kb/d).
 Because rationing destroys *output* while higher prices merely *transfer income*, trading
 inflation for availability is GDP-positive in this model. That result is a direct consequence of
 the assumed rationing cost and should be stress-tested, not taken as settled.
 
-**For Japan, subsidy withdrawal does not extend the runway.** China's runway lengthens (71 → 90
-weeks) when support lapses, but Japan's stays pinned at 39 weeks in every variant — because
-Japan's draw is capped by **deliverability**, not by stock size or by policy. This is the most
-counter-intuitive output of the model and the most operationally important: once the physical
-rate at which reserves can be moved is the binding constraint, conservation changes who bears
-the shortfall, not how long the reserves last.
+**For Japan, subsidy withdrawal does not extend the runway — but treat this as an illustration,
+not a finding.** China's runway lengthens (71 → 90 weeks) when support lapses, while Japan's
+stays pinned at 39 weeks in every variant, because Japan's draw is capped by **deliverability**
+rather than by stock size or policy.
+
+The mechanism is worth understanding: once the rate at which reserves can physically be moved
+is what binds, conservation changes *who bears* the shortfall, not how long the reserves last.
+But the number is close to tautological. Japan's 39.2 weeks is just
+247mn bbl ÷ 900 kb/d ÷ 7, and the 900 kb/d deliverability ceiling is **an assumption, not a
+sourced figure** — no such ceiling is published. Whenever the physical gap exceeds that cap the
+runway stops varying with scenario severity *by construction*. Change the assumed cap and this
+result changes with it. It belongs in a sensitivity discussion, and it is reported here as one.
+
+**The scenario engine models crude only.** Its physical channels — substitution, reserve draw,
+rationing, runway — all run on crude. LNG enters solely as an income transfer and naphtha not at
+all. So the constraints this report identifies as *actually* binding (Section 5: LNG at two to
+three weeks, and naphtha) are **not represented in the quantitative model**, and no runway in
+the table above is an LNG runway. The qualitative finding and the quantitative deliverable do
+not cover the same ground, and the crude runway should not be read as the economy's runway.
+Relatedly, the CPI channel is driven by the Brent move alone, so the much larger proportional
+LNG move reaches GDP but not CPI — Japan's CPI effect is understated on that account.
 
 **A caution on the CPI column.** These are sustained-shock scenarios measured against a no-shock
 baseline, not nowcasts. The base case shows Japanese CPI +2.49pp while realised core CPI is 1.8%
@@ -269,6 +296,28 @@ In rough order of value:
 3. **Japan's weekly utility LNG stock.** The genuinely binding constraint, and it is published.
 4. **Any hard read on Chinese reserve levels**, which are currently estimated end to end.
 
+## Independent review
+
+This study was audited by an independent reviewer with no stake in its conclusions
+(`docs/REVIEW.md`). The review's verdict was that the study is **not sound enough to act on as
+originally presented**, and it was right on every checkable point. Its findings have been
+applied rather than filed:
+
+| Finding | Status |
+|---|---|
+| Demand-destruction balance overstated as a Japan+China finding | **Fixed** — now scoped to Japan; China's absence of evidence stated |
+| Three irreconcilable figures for Chinese Aug-2026 imports, all tagged `hard` | **Fixed** — conflict disclosed; the derived parameter downgraded to `est` |
+| Report claimed the tracker tags assumptions; it did not | **Fixed** — the tracker's parameter table now renders every provenance tag |
+| "Pinned runway" presented as a finding, not an artifact of one assumption | **Fixed** — reframed as a sensitivity illustration at the point of claim |
+| `JP.policy.cpi_suppression_pp` mistagged `hard` | **Fixed** — retagged `est`; the incorrect BOJ attribution removed |
+| A `calc` parameter that did not reproduce from its formula | **Fixed** — 826 → 821 kb/d |
+| Terms-of-trade and rationing double-charged the same missing barrels | **Fixed** — the import bill is now struck on delivered volume only |
+| LNG absent from the model's physical channels | **Disclosed** — stated at the scenario table; not modelled |
+
+Two findings were disclosed rather than repaired, because repairing them would mean inventing
+the very parameters the study lacks: the model remains crude-only in its physical channels, and
+the CPI channel remains Brent-driven. Both are now stated where the results are presented.
+
 ## Limitations
 
 This study was assembled under two binding constraints, and its conclusions should be weighted
@@ -287,6 +336,11 @@ accordingly.
   primary statistical agencies and are flagged as such in the workstream notes. Where sources
   conflict — current Hormuz throughput most of all, where estimates range from 3% to 7.4% of
   pre-war — the range is reported rather than a false point estimate.
+
+The reviewer's overall verdict deserves to stand alongside the conclusions rather than be
+buried: the narrative's confidence repeatedly outran its evidentiary base. The corrections above
+address the specific instances, but a reader should treat the *direction* of these findings as
+well established and the *magnitudes* as illustrative throughout.
 
 A dissenting note worth recording: one analyst view holds that Chinese stocks are already
 depleting toward operational minimums, with Q3 2026 — now — as the base case. This report can

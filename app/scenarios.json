@@ -71,14 +71,14 @@
       "lng_tot_transfer_pct_gdp": 0.221,
       "total_tot_transfer_pct_gdp": 0.405,
       "supply_shortfall_kbd": 0.0,
-      "reserve_draw_kbd": 276.1,
-      "substitution_kbd": 826.0,
+      "reserve_draw_kbd": 281.1,
+      "substitution_kbd": 821.0,
       "voluntary_demand_destruction_kbd": 8.4,
       "involuntary_demand_destruction_kbd": 0.0,
       "total_demand_destruction_kbd": 8.4,
       "demand_destruction_pct_of_demand": 0.25,
       "usable_reserve_mnbbl": 247.0,
-      "runway_weeks": 127.8,
+      "runway_weeks": 125.5,
       "runway_binding_constraint": "shortfall",
       "gdp_impact_pp": -0.0,
       "gdp_impact_breakdown": {
@@ -135,23 +135,23 @@
       "scenario": "current_grind",
       "net_oil_import_mbd": 2.36,
       "oil_price_delta_usd": 29.0,
-      "oil_tot_transfer_pct_gdp": 0.595,
+      "oil_tot_transfer_pct_gdp": 0.515,
       "lng_tot_transfer_pct_gdp": 1.095,
-      "total_tot_transfer_pct_gdp": 1.69,
-      "supply_shortfall_kbd": 312.6,
+      "total_tot_transfer_pct_gdp": 1.61,
+      "supply_shortfall_kbd": 317.6,
       "reserve_draw_kbd": 900.0,
-      "substitution_kbd": 826.0,
+      "substitution_kbd": 821.0,
       "voluntary_demand_destruction_kbd": 27.0,
-      "involuntary_demand_destruction_kbd": 312.6,
-      "total_demand_destruction_kbd": 339.5,
-      "demand_destruction_pct_of_demand": 10.29,
+      "involuntary_demand_destruction_kbd": 317.6,
+      "total_demand_destruction_kbd": 344.5,
+      "demand_destruction_pct_of_demand": 10.44,
       "usable_reserve_mnbbl": 247.0,
       "runway_weeks": 39.2,
       "runway_binding_constraint": "deliverability",
       "gdp_impact_pp": -3.01,
       "gdp_impact_breakdown": {
-        "terms_of_trade": -0.84,
-        "involuntary_rationing": -2.37,
+        "terms_of_trade": -0.8,
+        "involuntary_rationing": -2.41,
         "policy_support": 0.2
       },
       "cpi_impact_pp": 2.49,
@@ -169,9 +169,9 @@
       "scenario": "current_grind",
       "net_oil_import_mbd": 11.0,
       "oil_price_delta_usd": 29.0,
-      "oil_tot_transfer_pct_gdp": 0.613,
+      "oil_tot_transfer_pct_gdp": 0.605,
       "lng_tot_transfer_pct_gdp": 0.27,
-      "total_tot_transfer_pct_gdp": 0.882,
+      "total_tot_transfer_pct_gdp": 0.875,
       "supply_shortfall_kbd": 135.8,
       "reserve_draw_kbd": 1500.0,
       "substitution_kbd": 1901.0,
@@ -203,23 +203,23 @@
       "scenario": "full_closure",
       "net_oil_import_mbd": 2.36,
       "oil_price_delta_usd": 74.0,
-      "oil_tot_transfer_pct_gdp": 1.518,
+      "oil_tot_transfer_pct_gdp": 1.269,
       "lng_tot_transfer_pct_gdp": 2.182,
-      "total_tot_transfer_pct_gdp": 3.699,
-      "supply_shortfall_kbd": 381.8,
+      "total_tot_transfer_pct_gdp": 3.451,
+      "supply_shortfall_kbd": 386.8,
       "reserve_draw_kbd": 900.0,
-      "substitution_kbd": 826.0,
+      "substitution_kbd": 821.0,
       "voluntary_demand_destruction_kbd": 68.8,
-      "involuntary_demand_destruction_kbd": 381.8,
-      "total_demand_destruction_kbd": 450.6,
-      "demand_destruction_pct_of_demand": 13.65,
+      "involuntary_demand_destruction_kbd": 386.8,
+      "total_demand_destruction_kbd": 455.6,
+      "demand_destruction_pct_of_demand": 13.81,
       "usable_reserve_mnbbl": 247.0,
       "runway_weeks": 39.2,
       "runway_binding_constraint": "deliverability",
-      "gdp_impact_pp": -4.54,
+      "gdp_impact_pp": -4.46,
       "gdp_impact_breakdown": {
-        "terms_of_trade": -1.85,
-        "involuntary_rationing": -2.89,
+        "terms_of_trade": -1.73,
+        "involuntary_rationing": -2.93,
         "policy_support": 0.2
       },
       "cpi_impact_pp": 7.5,
@@ -237,9 +237,9 @@
       "scenario": "full_closure",
       "net_oil_import_mbd": 11.0,
       "oil_price_delta_usd": 74.0,
-      "oil_tot_transfer_pct_gdp": 1.564,
+      "oil_tot_transfer_pct_gdp": 1.551,
       "lng_tot_transfer_pct_gdp": 0.537,
-      "total_tot_transfer_pct_gdp": 2.101,
+      "total_tot_transfer_pct_gdp": 2.088,
       "supply_shortfall_kbd": 91.9,
       "reserve_draw_kbd": 1500.0,
       "substitution_kbd": 1901.0,
@@ -250,9 +250,9 @@
       "usable_reserve_mnbbl": 750.0,
       "runway_weeks": 71.4,
       "runway_binding_constraint": "deliverability",
-      "gdp_impact_pp": -0.74,
+      "gdp_impact_pp": -0.73,
       "gdp_impact_breakdown": {
-        "terms_of_trade": -0.74,
+        "terms_of_trade": -0.73,
         "involuntary_rationing": -0.15,
         "policy_support": 0.15
       },
@@ -271,23 +271,23 @@
       "scenario": "closure_support_withdrawn",
       "net_oil_import_mbd": 2.36,
       "oil_price_delta_usd": 74.0,
-      "oil_tot_transfer_pct_gdp": 1.518,
+      "oil_tot_transfer_pct_gdp": 1.335,
       "lng_tot_transfer_pct_gdp": 2.182,
-      "total_tot_transfer_pct_gdp": 3.699,
-      "supply_shortfall_kbd": 278.6,
+      "total_tot_transfer_pct_gdp": 3.517,
+      "supply_shortfall_kbd": 283.6,
       "reserve_draw_kbd": 900.0,
-      "substitution_kbd": 826.0,
+      "substitution_kbd": 821.0,
       "voluntary_demand_destruction_kbd": 172.0,
-      "involuntary_demand_destruction_kbd": 278.6,
-      "total_demand_destruction_kbd": 450.6,
-      "demand_destruction_pct_of_demand": 13.65,
+      "involuntary_demand_destruction_kbd": 283.6,
+      "total_demand_destruction_kbd": 455.6,
+      "demand_destruction_pct_of_demand": 13.81,
       "usable_reserve_mnbbl": 247.0,
       "runway_weeks": 39.2,
       "runway_binding_constraint": "deliverability",
-      "gdp_impact_pp": -3.96,
+      "gdp_impact_pp": -3.91,
       "gdp_impact_breakdown": {
-        "terms_of_trade": -1.85,
-        "involuntary_rationing": -2.11,
+        "terms_of_trade": -1.76,
+        "involuntary_rationing": -2.15,
         "policy_support": 0.0
       },
       "cpi_impact_pp": 8.5,
@@ -337,19 +337,19 @@
         "country": "JP",
         "brent": 70,
         "throughput_pct": 0,
-        "gdp_impact_pp": -3.53,
+        "gdp_impact_pp": -3.57,
         "cpi_impact_pp": -1.11,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 495.0
+        "involuntary_dd_kbd": 500.0
       },
       {
         "country": "JP",
         "brent": 70,
         "throughput_pct": 10,
-        "gdp_impact_pp": -1.85,
+        "gdp_impact_pp": -1.89,
         "cpi_impact_pp": -1.11,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 272.9
+        "involuntary_dd_kbd": 277.9
       },
       {
         "country": "JP",
@@ -357,7 +357,7 @@
         "throughput_pct": 25,
         "gdp_impact_pp": 0.22,
         "cpi_impact_pp": -1.11,
-        "runway_weeks": 42.0,
+        "runway_weeks": 41.8,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -366,7 +366,7 @@
         "throughput_pct": 50,
         "gdp_impact_pp": 0.22,
         "cpi_impact_pp": -1.11,
-        "runway_weeks": 124.0,
+        "runway_weeks": 121.9,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -394,16 +394,16 @@
         "gdp_impact_pp": -3.69,
         "cpi_impact_pp": 0.5,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 482.0
+        "involuntary_dd_kbd": 487.0
       },
       {
         "country": "JP",
         "brent": 85,
         "throughput_pct": 10,
-        "gdp_impact_pp": -2.0,
+        "gdp_impact_pp": -2.03,
         "cpi_impact_pp": 0.5,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 259.9
+        "involuntary_dd_kbd": 264.9
       },
       {
         "country": "JP",
@@ -411,7 +411,7 @@
         "throughput_pct": 25,
         "gdp_impact_pp": -0.03,
         "cpi_impact_pp": 0.5,
-        "runway_weeks": 42.7,
+        "runway_weeks": 42.4,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -420,7 +420,7 @@
         "throughput_pct": 50,
         "gdp_impact_pp": -0.03,
         "cpi_impact_pp": 0.5,
-        "runway_weeks": 130.0,
+        "runway_weeks": 127.6,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -445,19 +445,19 @@
         "country": "JP",
         "brent": 100,
         "throughput_pct": 0,
-        "gdp_impact_pp": -3.83,
+        "gdp_impact_pp": -3.81,
         "cpi_impact_pp": 2.1,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 468.0
+        "involuntary_dd_kbd": 473.0
       },
       {
         "country": "JP",
         "brent": 100,
         "throughput_pct": 10,
-        "gdp_impact_pp": -2.15,
+        "gdp_impact_pp": -2.16,
         "cpi_impact_pp": 2.1,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 245.9
+        "involuntary_dd_kbd": 250.9
       },
       {
         "country": "JP",
@@ -465,7 +465,7 @@
         "throughput_pct": 25,
         "gdp_impact_pp": -0.29,
         "cpi_impact_pp": 2.1,
-        "runway_weeks": 43.4,
+        "runway_weeks": 43.1,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -474,7 +474,7 @@
         "throughput_pct": 50,
         "gdp_impact_pp": -0.29,
         "cpi_impact_pp": 2.1,
-        "runway_weeks": 137.0,
+        "runway_weeks": 134.4,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -499,10 +499,10 @@
         "country": "JP",
         "brent": 115,
         "throughput_pct": 0,
-        "gdp_impact_pp": -3.98,
+        "gdp_impact_pp": -3.93,
         "cpi_impact_pp": 3.71,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 454.1
+        "involuntary_dd_kbd": 459.1
       },
       {
         "country": "JP",
@@ -511,7 +511,7 @@
         "gdp_impact_pp": -2.29,
         "cpi_impact_pp": 3.71,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 232.0
+        "involuntary_dd_kbd": 237.0
       },
       {
         "country": "JP",
@@ -519,7 +519,7 @@
         "throughput_pct": 25,
         "gdp_impact_pp": -0.54,
         "cpi_impact_pp": 3.71,
-        "runway_weeks": 44.2,
+        "runway_weeks": 43.9,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -528,7 +528,7 @@
         "throughput_pct": 50,
         "gdp_impact_pp": -0.54,
         "cpi_impact_pp": 3.71,
-        "runway_weeks": 144.9,
+        "runway_weeks": 141.9,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -553,19 +553,19 @@
         "country": "JP",
         "brent": 130,
         "throughput_pct": 0,
-        "gdp_impact_pp": -4.12,
+        "gdp_impact_pp": -4.05,
         "cpi_impact_pp": 5.32,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 440.2
+        "involuntary_dd_kbd": 445.2
       },
       {
         "country": "JP",
         "brent": 130,
         "throughput_pct": 10,
-        "gdp_impact_pp": -2.44,
+        "gdp_impact_pp": -2.42,
         "cpi_impact_pp": 5.32,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 218.1
+        "involuntary_dd_kbd": 223.1
       },
       {
         "country": "JP",
@@ -573,7 +573,7 @@
         "throughput_pct": 25,
         "gdp_impact_pp": -0.79,
         "cpi_impact_pp": 5.32,
-        "runway_weeks": 45.0,
+        "runway_weeks": 44.7,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -582,7 +582,7 @@
         "throughput_pct": 50,
         "gdp_impact_pp": -0.79,
         "cpi_impact_pp": 5.32,
-        "runway_weeks": 153.6,
+        "runway_weeks": 150.4,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -607,19 +607,19 @@
         "country": "JP",
         "brent": 150,
         "throughput_pct": 0,
-        "gdp_impact_pp": -4.32,
+        "gdp_impact_pp": -4.21,
         "cpi_impact_pp": 7.46,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 421.6
+        "involuntary_dd_kbd": 426.6
       },
       {
         "country": "JP",
         "brent": 150,
         "throughput_pct": 10,
-        "gdp_impact_pp": -2.63,
+        "gdp_impact_pp": -2.6,
         "cpi_impact_pp": 7.46,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 199.5
+        "involuntary_dd_kbd": 204.5
       },
       {
         "country": "JP",
@@ -627,7 +627,7 @@
         "throughput_pct": 25,
         "gdp_impact_pp": -1.12,
         "cpi_impact_pp": 7.46,
-        "runway_weeks": 46.0,
+        "runway_weeks": 45.7,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -636,7 +636,7 @@
         "throughput_pct": 50,
         "gdp_impact_pp": -1.12,
         "cpi_impact_pp": 7.46,
-        "runway_weeks": 167.2,
+        "runway_weeks": 163.3,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -661,19 +661,19 @@
         "country": "JP",
         "brent": 180,
         "throughput_pct": 0,
-        "gdp_impact_pp": -4.61,
+        "gdp_impact_pp": -4.46,
         "cpi_impact_pp": 10.67,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 393.7
+        "involuntary_dd_kbd": 398.7
       },
       {
         "country": "JP",
         "brent": 180,
         "throughput_pct": 10,
-        "gdp_impact_pp": -2.93,
+        "gdp_impact_pp": -2.88,
         "cpi_impact_pp": 10.67,
         "runway_weeks": 39.2,
-        "involuntary_dd_kbd": 171.6
+        "involuntary_dd_kbd": 176.6
       },
       {
         "country": "JP",
@@ -681,7 +681,7 @@
         "throughput_pct": 25,
         "gdp_impact_pp": -1.63,
         "cpi_impact_pp": 10.67,
-        "runway_weeks": 47.8,
+        "runway_weeks": 47.5,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -690,7 +690,7 @@
         "throughput_pct": 50,
         "gdp_impact_pp": -1.63,
         "cpi_impact_pp": 10.67,
-        "runway_weeks": 192.6,
+        "runway_weeks": 187.5,
         "involuntary_dd_kbd": 0.0
       },
       {
@@ -771,7 +771,7 @@
         "country": "CN",
         "brent": 85,
         "throughput_pct": 0,
-        "gdp_impact_pp": -0.78,
+        "gdp_impact_pp": -0.77,
         "cpi_impact_pp": 0.21,
         "runway_weeks": 71.4,
         "involuntary_dd_kbd": 494.6
@@ -879,7 +879,7 @@
         "country": "CN",
         "brent": 115,
         "throughput_pct": 0,
-        "gdp_impact_pp": -0.77,
+        "gdp_impact_pp": -0.76,
         "cpi_impact_pp": 1.52,
         "runway_weeks": 71.4,
         "involuntary_dd_kbd": 333.0
@@ -933,7 +933,7 @@
         "country": "CN",
         "brent": 130,
         "throughput_pct": 0,
-        "gdp_impact_pp": -0.76,
+        "gdp_impact_pp": -0.75,
         "cpi_impact_pp": 2.18,
         "runway_weeks": 71.4,
         "involuntary_dd_kbd": 252.1
@@ -987,7 +987,7 @@
         "country": "CN",
         "brent": 150,
         "throughput_pct": 0,
-        "gdp_impact_pp": -0.76,
+        "gdp_impact_pp": -0.75,
         "cpi_impact_pp": 3.05,
         "runway_weeks": 71.4,
         "involuntary_dd_kbd": 144.4
@@ -1100,7 +1100,7 @@
       "policy_active": true,
       "gdp_impact_pp": -0.0,
       "cpi_impact_pp": 0.04,
-      "runway_weeks": 127.8,
+      "runway_weeks": 125.5,
       "voluntary_dd_kbd": 8.4,
       "involuntary_dd_kbd": 0.0
     },
@@ -1110,7 +1110,7 @@
       "policy_active": false,
       "gdp_impact_pp": -0.2,
       "cpi_impact_pp": 1.04,
-      "runway_weeks": 133.9,
+      "runway_weeks": 131.4,
       "voluntary_dd_kbd": 20.9,
       "involuntary_dd_kbd": 0.0
     },
@@ -1142,7 +1142,7 @@
       "cpi_impact_pp": 2.49,
       "runway_weeks": 39.2,
       "voluntary_dd_kbd": 27.0,
-      "involuntary_dd_kbd": 312.6
+      "involuntary_dd_kbd": 317.6
     },
     {
       "scenario": "current_grind",
@@ -1152,7 +1152,7 @@
       "cpi_impact_pp": 3.49,
       "runway_weeks": 39.2,
       "voluntary_dd_kbd": 67.4,
-      "involuntary_dd_kbd": 272.1
+      "involuntary_dd_kbd": 277.1
     },
     {
       "scenario": "current_grind",
@@ -1178,27 +1178,27 @@
       "scenario": "full_closure",
       "country": "JP",
       "policy_active": true,
-      "gdp_impact_pp": -4.54,
+      "gdp_impact_pp": -4.46,
       "cpi_impact_pp": 7.5,
       "runway_weeks": 39.2,
       "voluntary_dd_kbd": 68.8,
-      "involuntary_dd_kbd": 381.8
+      "involuntary_dd_kbd": 386.8
     },
     {
       "scenario": "full_closure",
       "country": "JP",
       "policy_active": false,
-      "gdp_impact_pp": -3.96,
+      "gdp_impact_pp": -3.91,
       "cpi_impact_pp": 8.5,
       "runway_weeks": 39.2,
       "voluntary_dd_kbd": 172.0,
-      "involuntary_dd_kbd": 278.6
+      "involuntary_dd_kbd": 283.6
     },
     {
       "scenario": "full_closure",
       "country": "CN",
       "policy_active": true,
-      "gdp_impact_pp": -0.74,
+      "gdp_impact_pp": -0.73,
       "cpi_impact_pp": 3.12,
       "runway_weeks": 71.4,
       "voluntary_dd_kbd": 398.7,
@@ -1218,27 +1218,27 @@
       "scenario": "closure_support_withdrawn",
       "country": "JP",
       "policy_active": true,
-      "gdp_impact_pp": -4.54,
+      "gdp_impact_pp": -4.46,
       "cpi_impact_pp": 7.5,
       "runway_weeks": 39.2,
       "voluntary_dd_kbd": 68.8,
-      "involuntary_dd_kbd": 381.8
+      "involuntary_dd_kbd": 386.8
     },
     {
       "scenario": "closure_support_withdrawn",
       "country": "JP",
       "policy_active": false,
-      "gdp_impact_pp": -3.96,
+      "gdp_impact_pp": -3.91,
       "cpi_impact_pp": 8.5,
       "runway_weeks": 39.2,
       "voluntary_dd_kbd": 172.0,
-      "involuntary_dd_kbd": 278.6
+      "involuntary_dd_kbd": 283.6
     },
     {
       "scenario": "closure_support_withdrawn",
       "country": "CN",
       "policy_active": true,
-      "gdp_impact_pp": -0.74,
+      "gdp_impact_pp": -0.73,
       "cpi_impact_pp": 3.12,
       "runway_weeks": 71.4,
       "voluntary_dd_kbd": 398.7,

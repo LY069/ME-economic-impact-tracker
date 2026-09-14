@@ -7795,7 +7795,7 @@
           "policy_max_draw_kbd": 1000.0
         },
         "mitigation": {
-          "max_substitution_kbd": 826.0
+          "max_substitution_kbd": 821.0
         },
         "elasticities": {
           "oil_demand_price_elasticity_short_run": -0.05,
@@ -7954,7 +7954,7 @@
       },
       "JP.mitigation.max_substitution_kbd": {
         "quality": "calc",
-        "basis": "Hormuz share fell 94.1% -> 59.3% by Jul 2026 (both sourced); 34.8% x 2,360 kb/d = 826 kb/d of demonstrated substitution."
+        "basis": "Hormuz share fell 94.1% -> 59.3% by Jul 2026 (both sourced): (94.1-59.3)=34.8pp x 2,360 kb/d = 821 kb/d of demonstrated substitution. (Corrected from 826, which did not reproduce from this formula.)"
       },
       "JP.elasticities.oil_demand_price_elasticity_short_run": {
         "quality": "hard",
@@ -7981,8 +7981,8 @@
         "basis": "Indirect pass-through via packaging, plastics and processed goods; no quantified coefficient could be sourced."
       },
       "JP.policy.cpi_suppression_pp": {
-        "quality": "hard",
-        "basis": "Aggregate Japanese energy-subsidy effect on headline CPI estimated at -1.0 pp (ws4_policy)."
+        "quality": "est",
+        "basis": "One third-party estimate (explicitly NOT government-confirmed, per docs/ws4_policy.md) puts Japan's combined energy subsidies at roughly -1.0pp on headline CPI against an estimated ~3% ex-subsidy rate. Previously mistagged `hard` and attributed to the BOJ; the BOJ does not publish this figure."
       },
       "JP.policy.subsidy_passthrough_block": {
         "quality": "assumption",
@@ -8009,8 +8009,8 @@
         "basis": "11,000 kb/d x 36.1% Gulf/Hormuz share (both sourced) = 3,971 kb/d."
       },
       "CN.energy.lng_import_mt_yr": {
-        "quality": "calc",
-        "basis": "100 bcm of LNG imports (sourced) / 1.36 bcm per mt = 73.5 mt."
+        "quality": "est",
+        "basis": "ws2_reliance states China's pre-war LNG imports as '>100 bcm' — a FLOOR, not a point value. Dividing 100 by 1.36 gives 73.5 mt, so this is a lower bound and the LNG income-transfer term for China is understated by an unknown margin. Downgraded from `calc`."
       },
       "CN.reserves.usable_stock_mnbbl": {
         "quality": "est",
@@ -8025,8 +8025,8 @@
         "basis": "Not published."
       },
       "CN.mitigation.max_substitution_kbd": {
-        "quality": "calc",
-        "basis": "Hormuz-dependent 3,971 kb/d less the realised import shortfall (11,000 - 8,930 = 2,070 kb/d in Aug 2026) = 1,901 kb/d replaced, largely by Russian and Central Asian pipeline barrels."
+        "quality": "est",
+        "basis": "CONTESTED INPUT. Hormuz-dependent 3,971 kb/d less the realised import shortfall. Aug 2026 Chinese crude imports are reported in this study's own sources at three irreconcilable levels: 37.9 Mt ~ 8.93 mb/d (Bloomberg, ws1_flows), 49.49 Mt ~ 11.65 mb/d (itiger.com, ws3_macro) and ~7.2 mb/d (Kpler prelim, ws5). This parameter uses the Bloomberg figure (11,000-8,930 = 2,070 kb/d displaced, so 1,901 kb/d substituted) because it is the most primary source of the three, but the alternatives would move it by roughly -1,900 to +2,600 kb/d. Downgraded from `calc` to `est` accordingly."
       },
       "CN.elasticities.oil_demand_price_elasticity_short_run": {
         "quality": "hard",
@@ -8063,12 +8063,19 @@
       "CN.policy.gdp_support_pp": {
         "quality": "assumption",
         "basis": "Stimulus attributable to the shock."
+      },
+      "conversions.mmbtu_per_tonne_lng": {
+        "quality": "assumption",
+        "basis": "52 mmbtu/tonne is the standard industry convention; not verified against a source this session. Load-bearing in the LNG terms-of-trade term."
+      },
+      "conversions.bcm_per_mt_lng": {
+        "quality": "assumption",
+        "basis": "1.36 bcm per mt is the standard convention; not verified this session. Used to derive CN.energy.lng_import_mt_yr."
       }
     },
     "sources": {
       "energy.net_oil_import_mbd": "https://www.eia.gov/todayinenergy/detail.php?id=67504",
-      "reserves.usable_stock_mnbbl": "https://www.meti.go.jp/english/press/2026/0415_002.html",
-      "policy.cpi_suppression_pp": "https://www.boj.or.jp/en/mopo/outlook/gor2607b.pdf"
+      "reserves.usable_stock_mnbbl": "https://www.meti.go.jp/english/press/2026/0415_002.html"
     },
     "assumptions": [
       "Per-$10/bbl GDP elasticities could not be sourced for Japan or China; the GDP channel therefore runs off a measured income transfer times an assumed multiplier rather than a published elasticity.",
@@ -8076,7 +8083,11 @@
       "CPI energy weights, retail pass-through and the naphtha beta are assumed; only Japan's aggregate subsidy effect on CPI (-1.0 pp) is sourced.",
       "Nominal GDP levels and Japan's oil demand and LNG tonnage are standard magnitudes, not figures verified against a source in this session.",
       "Product prices are scaled off Brent with near-unity betas in the interactive grid; in reality naphtha and LPG have moved further than crude in this episode, so the grid understates the petrochemical channel.",
-      "China's reserve position rests on commercial estimates throughout, since no official data is published."
+      "China's reserve position rests on commercial estimates throughout, since no official data is published.",
+      "Chinese August 2026 crude imports are reported at three irreconcilable levels across this study's own sources (~7.2, ~8.93 and ~11.65 mb/d). China's substitution ceiling depends on which is right; the most primary source was used and the conflict is flagged rather than resolved.",
+      "The scenario engine's physical channels (substitution, reserve draw, rationing, runway) model CRUDE ONLY. LNG enters solely as an income transfer, and naphtha not at all — so the model does not represent the LNG and naphtha constraints the report identifies as actually binding.",
+      "The CPI channel is driven by the Brent change alone; the LNG price move (roughly three times larger in proportional terms) reaches GDP through the terms-of-trade channel but not CPI. Japan's CPI energy effect is therefore understated.",
+      "LNG conversion factors (52 mmbtu/t, 1.36 bcm/mt) are standard conventions, not sourced this session."
     ]
   },
   "live": {

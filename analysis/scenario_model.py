@@ -149,23 +149,14 @@ def run_country(params: dict, country: str, sc: Scenario) -> CountryResult:
     base_brent = params["baseline"]["brent_usd_bbl"]
     base_jkm = params["baseline"]["jkm_usd_mmbtu"]
 
-    # ---- Channel 1: terms of trade -------------------------------------
+    # ---- Channel 3 first: the physical balance -------------------------
+    # The physical channels run before the terms-of-trade calculation because
+    # a country does not pay the elevated import price on barrels it never
+    # receives. Pricing the full pre-war import volume while Channel 3
+    # separately charges a GDP penalty for the rationed share of that same
+    # volume would bill the missing barrels twice.
     net_oil_import_mbd = c["energy"]["net_oil_import_mbd"]
     d_oil = sc.brent_usd_bbl - base_brent
-    # mb/d * $/bbl * 365 days = $mn/yr  ->  /1000 = $bn/yr
-    oil_transfer_bn = net_oil_import_mbd * d_oil * 365 / 1000.0
-    oil_tot_pct = oil_transfer_bn / gdp_usd_bn * 100.0
-
-    lng_import_mt = c["energy"]["lng_import_mt_yr"]
-    d_jkm = sc.jkm_usd_mmbtu - base_jkm
-    # 1 tonne LNG ~ 52 mmbtu (industry convention, stated in parameters.json)
-    mmbtu_per_t = params["conversions"]["mmbtu_per_tonne_lng"]
-    lng_transfer_bn = lng_import_mt * 1e6 * mmbtu_per_t * d_jkm / 1e9
-    lng_tot_pct = lng_transfer_bn / gdp_usd_bn * 100.0
-
-    total_tot_pct = oil_tot_pct + lng_tot_pct
-
-    # ---- Channel 3: physical balance -----------------------------------
     oil_demand_kbd = c["energy"]["oil_demand_kbd"]
     hormuz_dependent_kbd = c["energy"]["oil_imports_via_hormuz_kbd"]
 
@@ -214,6 +205,29 @@ def run_country(params: dict, country: str, sc: Scenario) -> CountryResult:
     # Whatever reserves cannot cover must be rationed away.
     involuntary_dd_kbd = shortfall_kbd
     total_dd_kbd = voluntary_dd_kbd + involuntary_dd_kbd
+
+    # ---- Channel 1: terms of trade, on delivered volume only ------------
+    # Net the import bill down by the barrels that never arrive, so the
+    # rationed shortfall is charged once (as lost output in the GDP
+    # calculation below) rather than twice.
+    delivered_import_mbd = max(
+        0.0, net_oil_import_mbd - involuntary_dd_kbd / 1000.0
+    )
+    # mb/d * $/bbl * 365 days = $mn/yr  ->  /1000 = $bn/yr
+    oil_transfer_bn = delivered_import_mbd * d_oil * 365 / 1000.0
+    oil_tot_pct = oil_transfer_bn / gdp_usd_bn * 100.0
+
+    lng_import_mt = c["energy"]["lng_import_mt_yr"]
+    d_jkm = sc.jkm_usd_mmbtu - base_jkm
+    # 1 tonne LNG ~ 52 mmbtu (industry convention, stated in parameters.json).
+    # Note: LNG appears ONLY here. The model has no LNG physical balance, so
+    # the LNG and naphtha constraints the report identifies as actually
+    # binding are not represented in the runway or rationing channels.
+    mmbtu_per_t = params["conversions"]["mmbtu_per_tonne_lng"]
+    lng_transfer_bn = lng_import_mt * 1e6 * mmbtu_per_t * d_jkm / 1e9
+    lng_tot_pct = lng_transfer_bn / gdp_usd_bn * 100.0
+
+    total_tot_pct = oil_tot_pct + lng_tot_pct
     dd_pct = total_dd_kbd / oil_demand_kbd * 100.0 if oil_demand_kbd else 0.0
 
     # ---- Channel 4: runway ---------------------------------------------

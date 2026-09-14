@@ -373,15 +373,10 @@ function runCountry(country, sc) {
 
   const gdp = c.macro.nominal_gdp_usd_bn;
   const dOil = sc.brent_usd_bbl - base.brent_usd_bbl;
-  const oilTransferBn = c.energy.net_oil_import_mbd * dOil * 365 / 1000;
-  const oilTot = oilTransferBn / gdp * 100;
 
-  const dJkm = sc.jkm_usd_mmbtu - base.jkm_usd_mmbtu;
-  const lngTransferBn =
-    c.energy.lng_import_mt_yr * 1e6 * PARAMS.conversions.mmbtu_per_tonne_lng * dJkm / 1e9;
-  const lngTot = lngTransferBn / gdp * 100;
-  const totalTot = oilTot + lngTot;
-
+  // Physical channels run first: a country does not pay the elevated import
+  // price on barrels it never receives, so the terms-of-trade bill is struck
+  // on delivered volume further down rather than on the pre-war baseline.
   const demand = c.energy.oil_demand_kbd;
   const lost = c.energy.oil_imports_via_hormuz_kbd * (1 - sc.hormuz_throughput_pct / 100);
   const substitution = Math.min(lost, c.mitigation.max_substitution_kbd);
@@ -406,6 +401,19 @@ function runCountry(country, sc) {
   const shortfall = Math.max(0, gap - draw);
   const involuntary = shortfall;
   const totalDD = voluntary + involuntary;
+
+  // Terms of trade, on delivered volume only — the rationed shortfall is
+  // charged once as lost output below, not twice.
+  const deliveredImportMbd = Math.max(0, c.energy.net_oil_import_mbd - involuntary / 1000);
+  const oilTransferBn = deliveredImportMbd * dOil * 365 / 1000;
+  const oilTot = oilTransferBn / gdp * 100;
+
+  const dJkm = sc.jkm_usd_mmbtu - base.jkm_usd_mmbtu;
+  // LNG appears only here: the model has no LNG physical balance.
+  const lngTransferBn =
+    c.energy.lng_import_mt_yr * 1e6 * PARAMS.conversions.mmbtu_per_tonne_lng * dJkm / 1e9;
+  const lngTot = lngTransferBn / gdp * 100;
+  const totalTot = oilTot + lngTot;
 
   let runway = null, binding = 'no draw required';
   if (draw > 0) {
@@ -1057,12 +1065,36 @@ function renderDataTable() {
 function renderParams() {
   const el = document.getElementById('paramTable');
   if (!PARAMS) { el.innerHTML = '<p class="empty">No parameters.</p>'; return; }
-  let html = `<table><thead><tr><th>Parameter</th><th>Japan</th><th>China</th><th>Source</th></tr></thead><tbody>`;
-  const walk = (path, obj) => {
-    for (const [k, v] of Object.entries(obj)) {
-      if (v && typeof v === 'object' && !Array.isArray(v)) walk(path.concat(k), v);
-    }
+  const prov = PARAMS.provenance || {};
+  // Each country's parameter carries its own provenance entry, so the tag is
+  // resolved per cell. Without this the reader sees a bare number and cannot
+  // tell a sourced figure from an unsourced modelling judgement — which is
+  // exactly the distinction the whole study turns on.
+  const tag = key => (prov[key]?.quality) || '';
+  const tagHTML = (key) => {
+    const q = tag(key);
+    if (!q) return '';
+    const colour = q === 'hard' ? 'var(--s3)'
+                 : q === 'calc' ? 'var(--s1)'
+                 : q === 'est' ? 'var(--s4)'
+                 : 'var(--critical)';   // assumption — the ones to attack first
+    return `<span class="q" style="border-color:${colour};color:${colour}"
+              title="${esc(prov[key]?.basis || '')}">${esc(q)}</span>`;
   };
+
+  const assumed = Object.values(prov).filter(p => p.quality === 'assumption').length;
+  let html = `<p class="lede" style="margin-bottom:10px">
+    ${Object.keys(prov).length} parameters carry a provenance tag;
+    <b>${assumed}</b> are unsourced modelling judgements marked
+    <span class="q" style="border-color:var(--critical);color:var(--critical)">assumption</span>.
+    Hover any tag for the basis. These are the parameters to attack first when
+    stress-testing a result.</p>`;
+
+  html += `<table><thead><tr><th>Parameter</th>
+    <th class="num">Japan</th><th>JP basis</th>
+    <th class="num">China</th><th>CN basis</th>
+    <th>Source</th></tr></thead><tbody>`;
+
   const groups = ['macro','energy','reserves','elasticities','cpi','policy','mitigation'];
   const jpc = PARAMS.countries.JP || {}, cnc = PARAMS.countries.CN || {};
   groups.forEach(g => {
@@ -1071,11 +1103,32 @@ function renderParams() {
       const src = (PARAMS.sources && PARAMS.sources[`${g}.${k}`]) || '';
       html += `<tr><td>${esc(g)}.${esc(k)}</td>
         <td class="num">${esc(jpc[g]?.[k] ?? '—')}</td>
+        <td>${tagHTML(`JP.${g}.${k}`)}</td>
         <td class="num">${esc(cnc[g]?.[k] ?? '—')}</td>
+        <td>${tagHTML(`CN.${g}.${k}`)}</td>
         <td>${src ? `<a href="${esc(src)}" target="_blank" rel="noopener">link</a>` : '—'}</td></tr>`;
     });
   });
+
+  // Baselines and conversions are shared rather than per-country, but they are
+  // just as load-bearing, so they belong in the same audit table.
+  Object.entries(PARAMS.baseline || {}).forEach(([k, v]) => {
+    if (k.startsWith('_')) return;
+    html += `<tr><td>baseline.${esc(k)}</td><td class="num">${esc(v)}</td>
+      <td>${tagHTML(`baseline.${k}`)}</td><td class="num">—</td><td></td><td>—</td></tr>`;
+  });
+  Object.entries(PARAMS.conversions || {}).forEach(([k, v]) => {
+    html += `<tr><td>conversions.${esc(k)}</td><td class="num">${esc(v)}</td>
+      <td>${tagHTML(`conversions.${k}`)}</td><td class="num">—</td><td></td><td>—</td></tr>`;
+  });
   html += `</tbody></table>`;
+
+  if (Array.isArray(PARAMS.assumptions) && PARAMS.assumptions.length) {
+    html += `<h4 style="font-family:var(--font-display);font-size:14px;margin:18px 0 6px">
+      Stated assumptions</h4><ul style="margin:0;padding-left:18px;color:var(--text-secondary);font-size:12.5px">`
+      + PARAMS.assumptions.map(a => `<li style="margin-bottom:5px">${esc(a)}</li>`).join('')
+      + `</ul>`;
+  }
   el.innerHTML = html;
 }
 
