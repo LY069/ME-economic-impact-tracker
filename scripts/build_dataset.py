@@ -265,16 +265,33 @@ def main() -> int:
         warnings.append("analysis/parameters.json not found - the dashboard's "
                         "scenario explorer will be inert")
 
-    doc["analysis"] = {
+    analysis = {
         "observations": long_rows,
         "tables": dict(structured),
-        "built_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "counts": {
             "observations": len(long_rows),
             "by_quality": dict(by_quality),
             "tables": {k: len(v) for k, v in structured.items()},
         },
     }
+
+    # Keep the build deterministic: only move `built_at` when the content
+    # actually changed. Otherwise every rebuild would produce a one-line diff,
+    # which buries real changes in noise and makes an "is the committed dataset
+    # in sync with its sources?" check impossible to run in CI.
+    previous = doc.get("analysis") or {}
+    unchanged = all(
+        previous.get(k) == analysis[k] for k in ("observations", "tables", "counts")
+    )
+    analysis["built_at"] = (
+        previous.get("built_at")
+        if unchanged and previous.get("built_at")
+        else datetime.now(timezone.utc).isoformat(timespec="seconds")
+    )
+    if unchanged:
+        print("dataset unchanged - preserving existing built_at")
+
+    doc["analysis"] = analysis
     os.makedirs(os.path.dirname(APP_DATA), exist_ok=True)
     with open(APP_DATA, "w", encoding="utf-8") as fh:
         json.dump(doc, fh, indent=2, ensure_ascii=False)

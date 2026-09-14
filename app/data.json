@@ -7737,7 +7737,6 @@
         }
       ]
     },
-    "built_at": "2026-09-14T13:41:34+00:00",
     "counts": {
       "observations": 389,
       "by_quality": {
@@ -7754,7 +7753,8 @@
         "policy": 31,
         "runway": 12
       }
-    }
+    },
+    "built_at": "2026-09-14T13:49:08+00:00"
   },
   "parameters": {
     "as_of": "2026-09-14",

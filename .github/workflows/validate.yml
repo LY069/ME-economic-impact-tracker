@@ -1,0 +1,64 @@
+name: Validate dataset and model
+
+# The study's integrity claims -- every observation sourced and quality-labelled,
+# scenario results that move in the right direction -- are only worth something
+# if they are enforced. This runs the same checks a contributor runs locally.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Check every research CSV is well-formed
+        run: |
+          python3 - <<'PY'
+          import csv, glob, os, sys
+          bad = []
+          for path in sorted(glob.glob("data/raw/*.csv")):
+              with open(path, encoding="utf-8-sig", newline="") as fh:
+                  rows = list(csv.reader(fh))
+              if not rows:
+                  bad.append(f"{path}: empty")
+                  continue
+              width = len(rows[0])
+              ragged = [i for i, r in enumerate(rows[1:], 2) if len(r) != width]
+              if ragged:
+                  bad.append(f"{path}: ragged rows at lines {ragged[:10]}")
+          if bad:
+              print("Malformed CSVs (run scripts/repair_csvs.py):", file=sys.stderr)
+              for b in bad:
+                  print("  " + b, file=sys.stderr)
+              sys.exit(1)
+          print("all research CSVs well-formed")
+          PY
+
+      - name: Rebuild the dataset from source
+        run: python3 scripts/build_dataset.py
+
+      - name: Rebuild scenario outputs
+        run: python3 analysis/scenario_model.py --out app/scenarios.json
+
+      - name: Validate provenance, units and scenario coherence
+        run: python3 scripts/validate_data.py
+
+      - name: Confirm the committed dataset matches its sources
+        run: |
+          # A committed app/data.json that no longer matches data/raw/ means the
+          # dashboard is showing something the research no longer says.
+          if ! git diff --quiet -- app/data.json; then
+            echo "::error::app/data.json is stale - run scripts/build_dataset.py and commit the result"
+            git diff --stat -- app/data.json
+            exit 1
+          fi
+          echo "committed dataset is in sync with data/raw/"
