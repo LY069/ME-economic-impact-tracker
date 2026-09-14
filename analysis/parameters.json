@@ -1,0 +1,215 @@
+{
+  "as_of": "2026-09-14",
+  "conflict_start_date": "2026-02-28",
+
+  "_provenance_note": "Every parameter carries a quality tag in `provenance`. `hard` = taken directly from a sourced research observation in data/raw/. `calc` = arithmetic on sourced observations, with the formula stated. `assumption` = a modelling judgement that could NOT be sourced in this session (the web-search budget was exhausted mid-research); these are the parameters to attack first when stress-testing the model, and they are listed together in `assumptions`.",
+
+  "baseline": {
+    "brent_usd_bbl": 71.0,
+    "jkm_usd_mmbtu": 11.3,
+    "naphtha_usd_t": 600.0,
+    "lpg_usd_t": 600.0,
+    "_comment": "Pre-war reference levels (late Feb 2026), against which scenario prices are differenced."
+  },
+
+  "conversions": {
+    "mmbtu_per_tonne_lng": 52.0,
+    "bcm_per_mt_lng": 1.36
+  },
+
+  "cross_price": {
+    "jkm_beta_to_brent": 1.0,
+    "naphtha_beta_to_brent": 1.0,
+    "lpg_beta_to_brent": 0.9,
+    "_comment": "Elasticity of each product price to a proportional Brent move, used when the sensitivity grid and the interactive controls scale prices off crude. Set to near-unity because in a chokepoint event the same physical constraint drives all four; they are assumptions, not estimated betas."
+  },
+
+  "countries": {
+    "JP": {
+      "name": "Japan",
+      "macro": {
+        "nominal_gdp_usd_bn": 4200.0
+      },
+      "energy": {
+        "oil_demand_kbd": 3300.0,
+        "net_oil_import_mbd": 2.36,
+        "lng_import_mt_yr": 66.0,
+        "oil_imports_via_hormuz_kbd": 2221.0
+      },
+      "reserves": {
+        "usable_stock_mnbbl": 247.0,
+        "max_deliverable_draw_kbd": 900.0,
+        "policy_max_draw_kbd": 1000.0
+      },
+      "mitigation": {
+        "max_substitution_kbd": 826.0
+      },
+      "elasticities": {
+        "oil_demand_price_elasticity_short_run": -0.05,
+        "tot_transfer_to_gdp_multiplier": 0.5,
+        "gdp_pp_per_pct_involuntary_demand_cut": 0.25
+      },
+      "cpi": {
+        "energy_weight_pct": 7.0,
+        "retail_energy_passthrough": 0.8,
+        "naphtha_to_cpi_beta": 0.02
+      },
+      "policy": {
+        "subsidy_passthrough_block": 0.6,
+        "cpi_suppression_pp": 1.0,
+        "gdp_support_pp": 0.2
+      }
+    },
+
+    "CN": {
+      "name": "China",
+      "macro": {
+        "nominal_gdp_usd_bn": 19000.0
+      },
+      "energy": {
+        "oil_demand_kbd": 15300.0,
+        "net_oil_import_mbd": 11.0,
+        "lng_import_mt_yr": 73.5,
+        "oil_imports_via_hormuz_kbd": 3971.0
+      },
+      "reserves": {
+        "usable_stock_mnbbl": 750.0,
+        "max_deliverable_draw_kbd": 1500.0,
+        "policy_max_draw_kbd": 2000.0
+      },
+      "mitigation": {
+        "max_substitution_kbd": 1901.0
+      },
+      "elasticities": {
+        "oil_demand_price_elasticity_short_run": -0.05,
+        "tot_transfer_to_gdp_multiplier": 0.35,
+        "gdp_pp_per_pct_involuntary_demand_cut": 0.25
+      },
+      "cpi": {
+        "energy_weight_pct": 3.5,
+        "retail_energy_passthrough": 0.6,
+        "naphtha_to_cpi_beta": 0.01
+      },
+      "policy": {
+        "subsidy_passthrough_block": 0.5,
+        "cpi_suppression_pp": 0.4,
+        "gdp_support_pp": 0.15
+      }
+    }
+  },
+
+  "scenarios": [
+    {
+      "key": "de_escalation",
+      "label": "De-escalation",
+      "description": "A shipping-protection accord or ceasefire restores roughly half of pre-war transit. Prices fall back but stay above pre-war on a persistent risk premium.",
+      "hormuz_throughput_pct": 50.0,
+      "duration_months": 6.0,
+      "brent_usd_bbl": 80.0,
+      "jkm_usd_mmbtu": 14.0,
+      "naphtha_usd_t": 700.0,
+      "lpg_usd_t": 690.0,
+      "policy_offset_active": true,
+      "probability_pct": 25.0
+    },
+    {
+      "key": "current_grind",
+      "label": "Current grind (base)",
+      "description": "The state observed on 2026-09-14: transit at a small single-digit share of normal after the East-West pipeline shutdown, Brent above $100, price support still in force in both economies.",
+      "hormuz_throughput_pct": 7.0,
+      "duration_months": 6.0,
+      "brent_usd_bbl": 100.0,
+      "jkm_usd_mmbtu": 24.7,
+      "naphtha_usd_t": 960.0,
+      "lpg_usd_t": 900.0,
+      "policy_offset_active": true,
+      "probability_pct": 45.0
+    },
+    {
+      "key": "full_closure",
+      "label": "Full closure",
+      "description": "Transit near zero and sustained, with Gulf loading infrastructure damaged. Substitution and reserve draw are both maxed out, so the residual must be rationed.",
+      "hormuz_throughput_pct": 2.0,
+      "duration_months": 9.0,
+      "brent_usd_bbl": 145.0,
+      "jkm_usd_mmbtu": 38.0,
+      "naphtha_usd_t": 1400.0,
+      "lpg_usd_t": 1300.0,
+      "policy_offset_active": true,
+      "probability_pct": 22.0
+    },
+    {
+      "key": "closure_support_withdrawn",
+      "label": "Full closure, support withdrawn",
+      "description": "As full closure, but fiscal price support lapses under budget pressure. The retail price signal is restored, so more demand adjusts voluntarily and reserves last longer — at the cost of a much higher CPI print and a larger real-income hit.",
+      "hormuz_throughput_pct": 2.0,
+      "duration_months": 9.0,
+      "brent_usd_bbl": 145.0,
+      "jkm_usd_mmbtu": 38.0,
+      "naphtha_usd_t": 1400.0,
+      "lpg_usd_t": 1300.0,
+      "policy_offset_active": false,
+      "probability_pct": 8.0
+    }
+  ],
+
+  "provenance": {
+    "baseline.brent_usd_bbl": {"quality": "hard", "basis": "Brent averaged $71/bbl on 2026-02-27, the last pre-strike session."},
+    "baseline.jkm_usd_mmbtu": {"quality": "calc", "basis": "JKM $24.685/mmbtu on 2026-09-09 (hard), reported +118% y/y, so pre-war = 24.685 / 2.18."},
+    "baseline.naphtha_usd_t": {"quality": "assumption", "basis": "Level not sourced; only the +60% change (2026-04-30) was found. Round pre-war level assumed."},
+    "baseline.lpg_usd_t": {"quality": "assumption", "basis": "Level not sourced this session."},
+
+    "JP.macro.nominal_gdp_usd_bn": {"quality": "assumption", "basis": "Structural baseline not captured by the research workstreams; standard magnitude used."},
+    "JP.energy.net_oil_import_mbd": {"quality": "hard", "basis": "Japan crude imports 2,360 kb/d (ws2_dependency, 2025)."},
+    "JP.energy.oil_imports_via_hormuz_kbd": {"quality": "calc", "basis": "2,360 kb/d x 94.1% Gulf/Hormuz share (both sourced) = 2,221 kb/d."},
+    "JP.energy.oil_demand_kbd": {"quality": "assumption", "basis": "Total oil product demand not sourced; standard magnitude used."},
+    "JP.energy.lng_import_mt_yr": {"quality": "assumption", "basis": "Tonnage not sourced this session; only the -3% y/y change was found."},
+    "JP.reserves.usable_stock_mnbbl": {"quality": "hard", "basis": "ws5_runway: 247 mn bbl usable = national reserve in full plus private stock drawable down to the reduced 55-day obligation."},
+    "JP.reserves.max_deliverable_draw_kbd": {"quality": "assumption", "basis": "Physical draw-and-deliver ceiling; not published. This binds before stock size does and is the single most important assumption in the Japan runway."},
+    "JP.reserves.policy_max_draw_kbd": {"quality": "assumption", "basis": "Political willingness to draw; not published."},
+    "JP.mitigation.max_substitution_kbd": {"quality": "calc", "basis": "Hormuz share fell 94.1% -> 59.3% by Jul 2026 (both sourced); 34.8% x 2,360 kb/d = 826 kb/d of demonstrated substitution."},
+    "JP.elasticities.oil_demand_price_elasticity_short_run": {"quality": "hard", "basis": "-0.05 short-run price elasticity of oil demand (EIA working paper, ws3_elasticities)."},
+    "JP.elasticities.tot_transfer_to_gdp_multiplier": {"quality": "assumption", "basis": "Per-$10/bbl GDP elasticities could not be sourced for either economy (recorded NA in ws3_elasticities). This converts the measured income transfer into a GDP effect."},
+    "JP.elasticities.gdp_pp_per_pct_involuntary_demand_cut": {"quality": "assumption", "basis": "Output cost of rationing, deliberately set well above the terms-of-trade coefficient because rationing destroys production rather than transferring income."},
+    "JP.cpi.energy_weight_pct": {"quality": "assumption", "basis": "CPI basket energy weight not sourced this session."},
+    "JP.cpi.retail_energy_passthrough": {"quality": "assumption", "basis": "Share of a wholesale energy move reaching retail prices."},
+    "JP.cpi.naphtha_to_cpi_beta": {"quality": "assumption", "basis": "Indirect pass-through via packaging, plastics and processed goods; no quantified coefficient could be sourced."},
+    "JP.policy.cpi_suppression_pp": {"quality": "hard", "basis": "Aggregate Japanese energy-subsidy effect on headline CPI estimated at -1.0 pp (ws4_policy)."},
+    "JP.policy.subsidy_passthrough_block": {"quality": "assumption", "basis": "Fraction of the retail price signal blocked by subsidy, which is what suppresses voluntary demand response."},
+    "JP.policy.gdp_support_pp": {"quality": "assumption", "basis": "Demand support from the fiscal package."},
+
+    "CN.macro.nominal_gdp_usd_bn": {"quality": "assumption", "basis": "Structural baseline not captured by the research workstreams."},
+    "CN.energy.net_oil_import_mbd": {"quality": "hard", "basis": "China crude imports ~11,000 kb/d pre-war (ws2_dependency)."},
+    "CN.energy.oil_demand_kbd": {"quality": "calc", "basis": "11,000 kb/d imports + 4,300 kb/d domestic production (both sourced) = 15,300 kb/d of supply, used as the demand proxy."},
+    "CN.energy.oil_imports_via_hormuz_kbd": {"quality": "calc", "basis": "11,000 kb/d x 36.1% Gulf/Hormuz share (both sourced) = 3,971 kb/d."},
+    "CN.energy.lng_import_mt_yr": {"quality": "calc", "basis": "100 bcm of LNG imports (sourced) / 1.36 bcm per mt = 73.5 mt."},
+    "CN.reserves.usable_stock_mnbbl": {"quality": "est", "basis": "ws5_runway: 750 mn bbl usable commercial stock after an assumed 25% tank-bottoms floor. China does not publish reserve data, so this rests on commercial estimates."},
+    "CN.reserves.max_deliverable_draw_kbd": {"quality": "assumption", "basis": "Not published."},
+    "CN.reserves.policy_max_draw_kbd": {"quality": "assumption", "basis": "Not published."},
+    "CN.mitigation.max_substitution_kbd": {"quality": "calc", "basis": "Hormuz-dependent 3,971 kb/d less the realised import shortfall (11,000 - 8,930 = 2,070 kb/d in Aug 2026) = 1,901 kb/d replaced, largely by Russian and Central Asian pipeline barrels."},
+    "CN.elasticities.oil_demand_price_elasticity_short_run": {"quality": "hard", "basis": "EIA short-run elasticity, as for Japan."},
+    "CN.elasticities.tot_transfer_to_gdp_multiplier": {"quality": "assumption", "basis": "Set below Japan's because China's price caps and state-absorbed refining losses blunt the pass-through to households."},
+    "CN.elasticities.gdp_pp_per_pct_involuntary_demand_cut": {"quality": "assumption", "basis": "As Japan."},
+    "CN.cpi.energy_weight_pct": {"quality": "assumption", "basis": "Not sourced; set below Japan's, consistent with a lower direct fuel weight in the Chinese basket."},
+    "CN.cpi.retail_energy_passthrough": {"quality": "assumption", "basis": "Lower than Japan's because the NDRC pricing mechanism caps pass-through by design."},
+    "CN.cpi.naphtha_to_cpi_beta": {"quality": "assumption", "basis": "Not sourced."},
+    "CN.policy.cpi_suppression_pp": {"quality": "assumption", "basis": "Effect of the NDRC price mechanism; not separately quantified in the sources found."},
+    "CN.policy.subsidy_passthrough_block": {"quality": "assumption", "basis": "Price-cap blocking of the retail signal."},
+    "CN.policy.gdp_support_pp": {"quality": "assumption", "basis": "Stimulus attributable to the shock."}
+  },
+
+  "sources": {
+    "energy.net_oil_import_mbd": "https://www.eia.gov/todayinenergy/detail.php?id=67504",
+    "reserves.usable_stock_mnbbl": "https://www.meti.go.jp/english/press/2026/0415_002.html",
+    "policy.cpi_suppression_pp": "https://www.boj.or.jp/en/mopo/outlook/gor2607b.pdf"
+  },
+
+  "assumptions": [
+    "Per-$10/bbl GDP elasticities could not be sourced for Japan or China; the GDP channel therefore runs off a measured income transfer times an assumed multiplier rather than a published elasticity.",
+    "Reserve deliverability ceilings are unpublished for both economies and are assumed. In most scenarios deliverability, not stock size, is what binds — so this assumption drives the runway more than the reserve totals do.",
+    "CPI energy weights, retail pass-through and the naphtha beta are assumed; only Japan's aggregate subsidy effect on CPI (-1.0 pp) is sourced.",
+    "Nominal GDP levels and Japan's oil demand and LNG tonnage are standard magnitudes, not figures verified against a source in this session.",
+    "Product prices are scaled off Brent with near-unity betas in the interactive grid; in reality naphtha and LPG have moved further than crude in this episode, so the grid understates the petrochemical channel.",
+    "China's reserve position rests on commercial estimates throughout, since no official data is published."
+  ]
+}

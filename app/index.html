@@ -361,21 +361,26 @@ function runCountry(country, sc) {
   const demand = c.energy.oil_demand_kbd;
   const lost = c.energy.oil_imports_via_hormuz_kbd * (1 - sc.hormuz_throughput_pct / 100);
   const substitution = Math.min(lost, c.mitigation.max_substitution_kbd);
-  const residual = Math.max(0, lost - substitution);
 
-  const drawCap = Math.min(c.reserves.max_deliverable_draw_kbd, c.reserves.policy_max_draw_kbd);
-  const draw = Math.min(residual, drawCap);
-  const shortfall = Math.max(0, residual - draw);
-
+  // Voluntary response is computed BEFORE the reserve draw: demand that is
+  // never exercised never has to be supplied. This ordering is what makes
+  // price support costly physically — blocking the price signal keeps demand
+  // on the system, widening the gap reserves must cover.
   let volPct = c.elasticities.oil_demand_price_elasticity_short_run *
                (base.brent_usd_bbl ? dOil / base.brent_usd_bbl : 0);
   if (sc.policy_offset_active) {
     volPct *= (1 - c.policy.subsidy_passthrough_block);
     notes.push(`Price support active: voluntary demand response damped by ${
-      Math.round(c.policy.subsidy_passthrough_block * 100)}%.`);
+      Math.round(c.policy.subsidy_passthrough_block * 100)}%, which widens the ` +
+      `physical gap and shortens the reserve runway.`);
   }
-  const voluntary = Math.max(0, -volPct * demand);
-  const involuntary = Math.max(0, shortfall - voluntary);
+  const voluntary = Math.min(demand, Math.max(0, -volPct * demand));
+
+  const gap = Math.max(0, lost - substitution - voluntary);
+  const drawCap = Math.min(c.reserves.max_deliverable_draw_kbd, c.reserves.policy_max_draw_kbd);
+  const draw = Math.min(gap, drawCap);
+  const shortfall = Math.max(0, gap - draw);
+  const involuntary = shortfall;
   const totalDD = voluntary + involuntary;
 
   let runway = null, binding = 'no draw required';
@@ -1111,12 +1116,18 @@ function renderFooter() {
 }
 
 async function boot() {
-  try {
-    const res = await fetch('./data.json', { cache: 'no-store' });
-    DATA = await res.json();
-  } catch (e) {
-    // Standalone build: data is inlined by scripts/build_standalone.py.
-    DATA = window.__EMBEDDED_DATA__ || null;
+  // The standalone build inlines the payload, so prefer it and skip the fetch
+  // entirely — attempting the request first would fail on file:// with a
+  // console error even though the page has the data it needs.
+  if (window.__EMBEDDED_DATA__) {
+    DATA = window.__EMBEDDED_DATA__;
+  } else {
+    try {
+      const res = await fetch('./data.json', { cache: 'no-store' });
+      DATA = await res.json();
+    } catch (e) {
+      DATA = null;
+    }
   }
   if (!DATA) {
     document.getElementById('kpis').innerHTML =

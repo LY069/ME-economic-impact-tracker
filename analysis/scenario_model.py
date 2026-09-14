@@ -177,19 +177,12 @@ def run_country(params: dict, country: str, sc: Scenario) -> CountryResult:
     sub_cap = c["mitigation"]["max_substitution_kbd"]
     substitution_kbd = min(lost_kbd, sub_cap)
 
-    residual_after_sub = max(0.0, lost_kbd - substitution_kbd)
-
-    # Reserve draw: bounded both by policy willingness and by physical
-    # deliverability.  Deliverability is the constraint people forget.
-    draw_cap = min(
-        c["reserves"]["max_deliverable_draw_kbd"],
-        c["reserves"]["policy_max_draw_kbd"],
-    )
-    reserve_draw_kbd = min(residual_after_sub, draw_cap)
-
-    shortfall_kbd = max(0.0, residual_after_sub - reserve_draw_kbd)
-
     # ---- Channel 2: voluntary (price-induced) demand response ----------
+    # Computed BEFORE the reserve draw, because demand that is never exercised
+    # never has to be supplied.  This ordering is what makes price support
+    # costly in physical terms: by blocking the retail price signal it keeps
+    # demand on the system, widening the gap that reserves must cover and so
+    # shortening the runway.
     elas = c["elasticities"]["oil_demand_price_elasticity_short_run"]
     pct_price_change = (d_oil / base_brent) if base_brent else 0.0
     voluntary_pct = elas * pct_price_change  # elasticity is negative
@@ -198,12 +191,28 @@ def run_country(params: dict, country: str, sc: Scenario) -> CountryResult:
         voluntary_pct *= (1.0 - block)
         notes.append(
             f"Subsidy/price-cap active: voluntary demand response damped by "
-            f"{block*100:.0f}% (retail price signal suppressed)."
+            f"{block*100:.0f}% (retail price signal suppressed), which widens "
+            f"the physical gap and shortens the reserve runway."
         )
-    voluntary_dd_kbd = max(0.0, -voluntary_pct * oil_demand_kbd)
+    voluntary_dd_kbd = min(
+        oil_demand_kbd, max(0.0, -voluntary_pct * oil_demand_kbd)
+    )
 
-    # Voluntary savings reduce the physical shortfall that must be rationed.
-    involuntary_dd_kbd = max(0.0, shortfall_kbd - voluntary_dd_kbd)
+    # ---- Channel 3: what is left for reserves and rationing to cover ----
+    gap_kbd = max(0.0, lost_kbd - substitution_kbd - voluntary_dd_kbd)
+
+    # Reserve draw: bounded both by policy willingness and by physical
+    # deliverability.  Deliverability is the constraint people forget.
+    draw_cap = min(
+        c["reserves"]["max_deliverable_draw_kbd"],
+        c["reserves"]["policy_max_draw_kbd"],
+    )
+    reserve_draw_kbd = min(gap_kbd, draw_cap)
+
+    shortfall_kbd = max(0.0, gap_kbd - reserve_draw_kbd)
+
+    # Whatever reserves cannot cover must be rationed away.
+    involuntary_dd_kbd = shortfall_kbd
     total_dd_kbd = voluntary_dd_kbd + involuntary_dd_kbd
     dd_pct = total_dd_kbd / oil_demand_kbd * 100.0 if oil_demand_kbd else 0.0
 

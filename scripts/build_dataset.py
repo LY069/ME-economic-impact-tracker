@@ -59,11 +59,30 @@ VALID_QUALITY = {"hard", "est", "calc"}
 
 
 def read_csv(path: str) -> List[Dict[str, str]]:
+    """Read a research CSV, tolerating unquoted commas in the final column.
+
+    The `note` column is free text and research agents routinely leave commas
+    in it unquoted, which makes the row wider than the header. csv.DictReader
+    parks the overflow under a None key. Those extras are always the tail of
+    the last column, so rejoining them with commas recovers the original text
+    instead of discarding the row.
+    """
+    out: List[Dict[str, str]] = []
     with open(path, "r", encoding="utf-8-sig", newline="") as fh:
-        return [
-            {(k or "").strip(): (v or "").strip() for k, v in row.items()}
-            for row in csv.DictReader(fh)
-        ]
+        reader = csv.DictReader(fh)
+        fields = reader.fieldnames or []
+        last = fields[-1] if fields else None
+        for row in reader:
+            extras = row.pop(None, None)
+            clean = {
+                (k or "").strip(): ("" if v is None else str(v)).strip()
+                for k, v in row.items()
+            }
+            if extras and last:
+                tail = ",".join(str(e) for e in extras if e is not None)
+                clean[last] = (clean.get(last, "") + "," + tail).strip(",").strip()
+            out.append(clean)
+    return out
 
 
 def normalise_date(value: str) -> str:
@@ -233,6 +252,18 @@ def main() -> int:
     by_quality: Dict[str, int] = defaultdict(int)
     for r in long_rows:
         by_quality[r["quality"] or "unlabelled"] += 1
+
+    # The dashboard runs a JS port of the scenario model, so it needs the same
+    # parameter file the Python model reads. Embedding it here is what keeps
+    # the two implementations from drifting apart.
+    param_path = os.path.join(ROOT, "analysis", "parameters.json")
+    if os.path.exists(param_path):
+        with open(param_path, "r", encoding="utf-8") as fh:
+            doc["parameters"] = json.load(fh)
+        print(f"embedded {param_path}")
+    else:
+        warnings.append("analysis/parameters.json not found - the dashboard's "
+                        "scenario explorer will be inert")
 
     doc["analysis"] = {
         "observations": long_rows,
