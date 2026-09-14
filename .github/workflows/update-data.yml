@@ -1,0 +1,63 @@
+name: Refresh live tracker data
+
+# Runs the live-data updater on a schedule so the dashboard tracks markets
+# rather than showing a frozen snapshot. GitHub-hosted runners have open
+# outbound network access, so the public price endpoints are reachable here
+# even when a sandboxed dev environment cannot reach them.
+
+on:
+  schedule:
+    # 06:10 UTC on weekdays - after the previous session's settlement prints.
+    - cron: "10 6 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      require_live:
+        description: "Fail the run if no series could be refreshed"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-tracker-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Refresh market series
+        env:
+          # Optional: add these as repository secrets to enable the official
+          # EIA and FRED series. Absent, those series are skipped and the
+          # key-free Stooq series still refresh.
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          python3 scripts/update_data.py \
+            ${{ inputs.require_live && '--require-live' || '' }}
+
+      - name: Rebuild derived scenario outputs
+        run: python3 analysis/scenario_model.py --out app/scenarios.json
+
+      - name: Validate the dataset before committing
+        run: python3 scripts/validate_data.py
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- app/data.json app/scenarios.json; then
+            echo "No data change - nothing to commit."
+            exit 0
+          fi
+          git add app/data.json app/scenarios.json
+          git commit -m "chore(data): refresh live tracker series [skip ci]"
+          git push
