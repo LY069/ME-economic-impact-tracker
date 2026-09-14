@@ -1,0 +1,1140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hormuz Shock Tracker</title>
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1: #fcfcfb;
+    --page: #f9f9f7;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --muted: #898781;
+    --grid: #e1e0d9;
+    --axis: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+    --s5: #e87ba4; --s6: #008300; --s7: #4a3aa7; --s8: #e34948;
+    --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+    --seq-100:#cde2fb; --seq-200:#9ec5f4; --seq-300:#6da7ec; --seq-400:#3987e5;
+    --seq-500:#256abf; --seq-600:#184f95; --seq-700:#0d366b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface-1: #1a1a19; --page: #0d0d0d;
+      --text-primary: #ffffff; --text-secondary: #c3c2b7; --muted: #898781;
+      --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+      --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1: #1a1a19; --page: #0d0d0d;
+    --text-primary: #ffffff; --text-secondary: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+  }
+
+  body {
+    margin: 0; background: var(--page); color: var(--text-primary);
+    font: 14px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px; padding-left: 20px; padding-right: 20px; }
+  header.top { margin-bottom: 22px; }
+  h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .sub { color: var(--text-secondary); margin: 0; max-width: 70ch; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
+    padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border);
+    background: var(--surface-1); color: var(--text-secondary);
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+
+  section { margin-top: 34px; }
+  h2 { font-size: 17px; margin: 0 0 4px; letter-spacing: -0.005em; }
+  .lede { color: var(--text-secondary); margin: 0 0 14px; max-width: 78ch; font-size: 13px; }
+
+  .card {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px;
+  }
+  .grid { display: grid; gap: 14px; }
+  .kpis { grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)); }
+  .two { grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); }
+
+  .kpi .label { font-size: 11.5px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+  .kpi .value { font-size: 29px; line-height: 1.1; margin: 7px 0 3px; }
+  .kpi .unit { font-size: 14px; color: var(--text-secondary); margin-left: 3px; }
+  .kpi .note { font-size: 11.5px; color: var(--muted); }
+
+  table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+  th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  th { color: var(--text-secondary); font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.03em; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .scroll { overflow-x: auto; }
+
+  .q { font-size: 10px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); color: var(--text-secondary); }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; margin-bottom: 14px; }
+  .ctl { display: flex; flex-direction: column; gap: 5px; min-width: 190px; }
+  .ctl label { font-size: 11.5px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+  .ctl output { font-variant-numeric: tabular-nums; color: var(--text-primary); font-size: 15px; }
+  input[type=range] { width: 100%; accent-color: var(--s1); }
+  select, button {
+    font: inherit; font-size: 13px; padding: 5px 9px; border-radius: 7px;
+    border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary);
+  }
+  button { cursor: pointer; }
+  button[aria-pressed="true"] { border-color: var(--s1); color: var(--s1); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 2px 0 10px; font-size: 12px; color: var(--text-secondary); }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .swatch { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .gridline { stroke: var(--grid); stroke-width: 1; }
+  .axisline { stroke: var(--axis); stroke-width: 1; }
+  .tick { fill: var(--muted); font-size: 10.5px; }
+  .axlabel { fill: var(--text-secondary); font-size: 11px; }
+  .dlabel { fill: var(--text-primary); font-size: 11px; font-variant-numeric: tabular-nums; }
+
+  .tooltip {
+    position: fixed; pointer-events: none; z-index: 50; opacity: 0;
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 7px;
+    padding: 7px 9px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.13);
+    transition: opacity .1s; max-width: 260px;
+  }
+  .tooltip .tt-title { font-weight: 600; margin-bottom: 3px; }
+  .tooltip .tt-row { color: var(--text-secondary); display: flex; justify-content: space-between; gap: 12px; }
+  .tooltip .tt-row b { color: var(--text-primary); font-variant-numeric: tabular-nums; font-weight: 600; }
+
+  details { margin-top: 10px; }
+  summary { cursor: pointer; font-size: 12.5px; color: var(--text-secondary); }
+  .empty { color: var(--muted); font-size: 13px; padding: 14px 0; }
+  .foot { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--grid); color: var(--muted); font-size: 12px; }
+  .warnbox {
+    border-left: 3px solid var(--warning); background: var(--surface-1);
+    padding: 10px 13px; border-radius: 0 7px 7px 0; font-size: 12.5px;
+    color: var(--text-secondary); margin-bottom: 14px;
+  }
+  @media (max-width: 640px) { .kpi .value { font-size: 24px; } h1 { font-size: 21px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>Hormuz Shock Tracker — Japan &amp; China</h1>
+  <p class="sub">
+    Economic impact of the 2026 Iran–US conflict energy supply disruption: what has been
+    lost, how exposed Japan and China are, what the data already shows, what governments
+    are doing about it, and how long the reserves last.
+  </p>
+  <div class="meta-row" id="metaRow"></div>
+</header>
+
+<section id="kpiSection">
+  <h2>Where things stand</h2>
+  <p class="lede" id="kpiLede">Headline readings, each traceable to a sourced observation in the dataset.</p>
+  <div class="grid kpis" id="kpis"></div>
+</section>
+
+<section id="scenarioSection">
+  <h2>Scenario explorer</h2>
+  <p class="lede">
+    Move the drivers and the model recomputes. The four channels are an income transfer
+    abroad on net energy imports, a price-induced (voluntary) demand response, a physical
+    shortfall that must be rationed once substitution and reserve draw are exhausted, and
+    the reserve runway. Price support is modelled as a switch because it is the real policy
+    choice: it lowers CPI now and stops demand adjusting, which drains reserves faster.
+  </p>
+  <div class="card">
+    <div class="controls">
+      <div class="ctl">
+        <label for="brent">Brent sustained</label>
+        <output id="brentOut"></output>
+        <input type="range" id="brent" min="60" max="220" step="5">
+      </div>
+      <div class="ctl">
+        <label for="thr">Hormuz throughput</label>
+        <output id="thrOut"></output>
+        <input type="range" id="thr" min="0" max="100" step="1">
+      </div>
+      <div class="ctl">
+        <label for="policyBtn">Price support</label>
+        <button id="policyBtn" aria-pressed="true">Subsidies active</button>
+      </div>
+      <div class="ctl" style="min-width:150px">
+        <label for="preset">Preset scenario</label>
+        <select id="preset"></select>
+      </div>
+    </div>
+    <div id="scenarioOut" class="grid two"></div>
+    <div id="scenarioNote" class="lede" style="margin-top:12px;margin-bottom:0"></div>
+  </div>
+  <details>
+    <summary>Model parameters and assumptions</summary>
+    <div class="scroll" id="paramTable"></div>
+  </details>
+</section>
+
+<section id="sensSection">
+  <h2>Sensitivity: price against physical availability</h2>
+  <p class="lede">
+    The interaction is the story. A high price with open transit is an income shock that
+    monetary and fiscal policy can cushion; a low price with closed transit is a rationing
+    shock that they cannot. Cells show the GDP impact in percentage points.
+  </p>
+  <div class="card">
+    <div class="controls" style="margin-bottom:10px">
+      <div class="ctl" style="min-width:140px">
+        <label for="sensCountry">Economy</label>
+        <select id="sensCountry"></select>
+      </div>
+      <div class="ctl" style="min-width:170px">
+        <label for="sensMetric">Metric</label>
+        <select id="sensMetric">
+          <option value="gdp_impact_pp">GDP impact (pp)</option>
+          <option value="cpi_impact_pp">CPI impact (pp)</option>
+          <option value="runway_weeks">Reserve runway (weeks)</option>
+          <option value="involuntary_dd_kbd">Rationed demand (kb/d)</option>
+        </select>
+      </div>
+    </div>
+    <div id="heatmap"></div>
+  </div>
+</section>
+
+<section id="supplySection">
+  <h2>1 · Supply disruption</h2>
+  <p class="lede">Pre-war versus current flows through the strait, by product.</p>
+  <div class="card" id="supplyCard"></div>
+</section>
+
+<section id="relianceSection">
+  <h2>2 · Reliance on the disrupted products</h2>
+  <p class="lede">
+    Import dependence and the share that must transit Hormuz. Exposure is dependency
+    multiplied by concentration multiplied by how hard the product is to substitute.
+  </p>
+  <div class="card" id="relianceCard"></div>
+</section>
+
+<section id="macroSection">
+  <h2>3 · Realised impact and demand destruction</h2>
+  <p class="lede">
+    Only observations already printed in the data. Forecast revisions are kept separate
+    below, because conflating the two is the main way this shock gets over-reported.
+  </p>
+  <div class="card" id="macroCard"></div>
+</section>
+
+<section id="policySection">
+  <h2>4 · Policy offsets and their durability</h2>
+  <p class="lede">
+    Measures in force, what they cost, when they expire, and how likely each is to be
+    extended.
+  </p>
+  <div class="card" id="policyCard"></div>
+</section>
+
+<section id="reserveSection">
+  <h2>5 · Reserves and the runway</h2>
+  <p class="lede">
+    Usable stock against the current shortfall. Days of cover overstate resilience:
+    reserves have an operational floor and a maximum deliverable rate, so the binding
+    constraint is usually how fast oil can move, not how much is buried.
+  </p>
+  <div class="card" id="reserveCard"></div>
+</section>
+
+<section id="dataSection">
+  <h2>Dataset</h2>
+  <p class="lede">Every figure with its source, quality label and observation date.</p>
+  <div class="card">
+    <div class="controls">
+      <div class="ctl" style="min-width:150px">
+        <label for="filterCountry">Economy</label>
+        <select id="filterCountry"><option value="">All</option></select>
+      </div>
+      <div class="ctl" style="min-width:150px">
+        <label for="filterProduct">Product</label>
+        <select id="filterProduct"><option value="">All</option></select>
+      </div>
+      <div class="ctl" style="min-width:130px">
+        <label for="filterQuality">Quality</label>
+        <select id="filterQuality">
+          <option value="">All</option>
+          <option value="hard">hard</option>
+          <option value="est">est</option>
+          <option value="calc">calc</option>
+        </select>
+      </div>
+    </div>
+    <div class="scroll" id="dataTable"></div>
+  </div>
+</section>
+
+<p class="foot" id="foot"></p>
+</div>
+
+<div class="tooltip" id="tip" role="status" aria-live="polite"></div>
+
+<script>
+/* ------------------------------------------------------------------ *
+ * Hormuz Shock Tracker
+ *
+ * The page is a renderer: it holds no numbers of its own. Everything is
+ * read from data.json (research observations + live market series +
+ * model parameters) so the dashboard and the Python model in
+ * analysis/scenario_model.py can never drift apart.
+ * ------------------------------------------------------------------ */
+
+const SERIES = ['--s1','--s2','--s3','--s4','--s5','--s6','--s7','--s8'];
+const cssvar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmt = (v, d = 1) =>
+  (v === null || v === undefined || Number.isNaN(v)) ? '—'
+  : Number(v).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+let DATA = null, PARAMS = null;
+const state = { brent: null, thr: null, policy: true, sensCountry: 'JP', sensMetric: 'gdp_impact_pp' };
+
+/* ---------- tooltip ---------- */
+const tip = document.getElementById('tip');
+function showTip(evt, title, rows) {
+  tip.innerHTML = `<div class="tt-title">${esc(title)}</div>` +
+    rows.map(r => `<div class="tt-row"><span>${esc(r[0])}</span><b>${esc(r[1])}</b></div>`).join('');
+  tip.style.opacity = '1';
+  const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = evt.clientX + pad, y = evt.clientY + pad;
+  if (x + w > innerWidth - 8) x = evt.clientX - w - pad;
+  if (y + h > innerHeight - 8) y = evt.clientY - h - pad;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+const hideTip = () => { tip.style.opacity = '0'; };
+document.addEventListener('scroll', hideTip, true);
+
+/* ---------- data access helpers ---------- */
+const obs = () => (DATA?.analysis?.observations) || [];
+const table = name => (DATA?.analysis?.tables?.[name]) || [];
+
+function findObs({ country, product, metric, series_id }) {
+  return obs().filter(o =>
+    (!country || o.country === country) &&
+    (!product || o.product === product) &&
+    (!metric || (o.metric || '').toLowerCase().includes(metric.toLowerCase())) &&
+    (!series_id || o.series_id === series_id));
+}
+const latest = rows =>
+  rows.filter(r => r.value !== null && r.value !== undefined)
+      .sort((a, b) => String(a.date).localeCompare(String(b.date))).slice(-1)[0] || null;
+
+/* ================================================================== *
+ * Scenario model - a faithful port of analysis/scenario_model.py.
+ * Kept structurally identical (same field names, same order of
+ * operations) so the two can be diffed by eye when either changes.
+ * ================================================================== */
+function runCountry(country, sc) {
+  const c = PARAMS.countries[country];
+  const base = PARAMS.baseline;
+  const notes = [];
+
+  const gdp = c.macro.nominal_gdp_usd_bn;
+  const dOil = sc.brent_usd_bbl - base.brent_usd_bbl;
+  const oilTransferBn = c.energy.net_oil_import_mbd * dOil * 365 / 1000;
+  const oilTot = oilTransferBn / gdp * 100;
+
+  const dJkm = sc.jkm_usd_mmbtu - base.jkm_usd_mmbtu;
+  const lngTransferBn =
+    c.energy.lng_import_mt_yr * 1e6 * PARAMS.conversions.mmbtu_per_tonne_lng * dJkm / 1e9;
+  const lngTot = lngTransferBn / gdp * 100;
+  const totalTot = oilTot + lngTot;
+
+  const demand = c.energy.oil_demand_kbd;
+  const lost = c.energy.oil_imports_via_hormuz_kbd * (1 - sc.hormuz_throughput_pct / 100);
+  const substitution = Math.min(lost, c.mitigation.max_substitution_kbd);
+  const residual = Math.max(0, lost - substitution);
+
+  const drawCap = Math.min(c.reserves.max_deliverable_draw_kbd, c.reserves.policy_max_draw_kbd);
+  const draw = Math.min(residual, drawCap);
+  const shortfall = Math.max(0, residual - draw);
+
+  let volPct = c.elasticities.oil_demand_price_elasticity_short_run *
+               (base.brent_usd_bbl ? dOil / base.brent_usd_bbl : 0);
+  if (sc.policy_offset_active) {
+    volPct *= (1 - c.policy.subsidy_passthrough_block);
+    notes.push(`Price support active: voluntary demand response damped by ${
+      Math.round(c.policy.subsidy_passthrough_block * 100)}%.`);
+  }
+  const voluntary = Math.max(0, -volPct * demand);
+  const involuntary = Math.max(0, shortfall - voluntary);
+  const totalDD = voluntary + involuntary;
+
+  let runway = null, binding = 'no draw required';
+  if (draw > 0) {
+    runway = c.reserves.usable_stock_mnbbl * 1000 / draw / 7;
+    binding = draw >= c.reserves.max_deliverable_draw_kbd - 1e-9 ? 'deliverability'
+            : draw >= c.reserves.policy_max_draw_kbd - 1e-9 ? 'policy' : 'shortfall';
+  }
+
+  const gdpTot = -totalTot * c.elasticities.tot_transfer_to_gdp_multiplier;
+  const involPctDemand = demand ? involuntary / demand * 100 : 0;
+  const gdpRation = -involPctDemand * c.elasticities.gdp_pp_per_pct_involuntary_demand_cut;
+  const gdpPolicy = sc.policy_offset_active ? c.policy.gdp_support_pp : 0;
+
+  const pctPrice = base.brent_usd_bbl ? dOil / base.brent_usd_bbl : 0;
+  const cpiDirect = c.cpi.energy_weight_pct / 100 * pctPrice * 100 * c.cpi.retail_energy_passthrough;
+  const naphChange = base.naphtha_usd_t ? (sc.naphtha_usd_t - base.naphtha_usd_t) / base.naphtha_usd_t : 0;
+  const cpiIndirect = naphChange * 100 * c.cpi.naphtha_to_cpi_beta;
+  const cpiSubsidy = sc.policy_offset_active ? -c.policy.cpi_suppression_pp : 0;
+
+  return {
+    country, scenario: sc.key,
+    oil_tot: oilTot, lng_tot: lngTot, total_tot: totalTot,
+    lost_kbd: lost, substitution_kbd: substitution, reserve_draw_kbd: draw,
+    shortfall_kbd: shortfall,
+    voluntary_dd_kbd: voluntary, involuntary_dd_kbd: involuntary,
+    total_dd_kbd: totalDD, dd_pct: demand ? totalDD / demand * 100 : 0,
+    runway_weeks: runway, binding,
+    gdp_impact_pp: gdpTot + gdpRation + gdpPolicy,
+    gdp_parts: { 'Terms of trade': gdpTot, 'Rationing': gdpRation, 'Policy support': gdpPolicy },
+    cpi_impact_pp: cpiDirect + cpiIndirect + cpiSubsidy,
+    cpi_parts: { 'Direct energy': cpiDirect, 'Via naphtha': cpiIndirect, 'Subsidy offset': cpiSubsidy },
+    notes
+  };
+}
+
+/** Scale gas and product prices off crude, since they co-move in a chokepoint event. */
+function scenarioFromControls(brent, thrPct, policy) {
+  const b = PARAMS.baseline, x = b.brent_usd_bbl ? brent / b.brent_usd_bbl - 1 : 0;
+  return {
+    key: 'interactive', hormuz_throughput_pct: thrPct, brent_usd_bbl: brent,
+    jkm_usd_mmbtu: b.jkm_usd_mmbtu * (1 + x * PARAMS.cross_price.jkm_beta_to_brent),
+    naphtha_usd_t: b.naphtha_usd_t * (1 + x * PARAMS.cross_price.naphtha_beta_to_brent),
+    lpg_usd_t: b.lpg_usd_t * (1 + x * PARAMS.cross_price.lpg_beta_to_brent),
+    policy_offset_active: policy
+  };
+}
+
+/* ================================================================== *
+ * Chart primitives - plain SVG, no libraries.
+ * ================================================================== */
+function barChart(el, rows, opts = {}) {
+  // rows: [{label, value, color?, note?}]
+  if (!rows.length) { el.innerHTML = '<p class="empty">No data yet.</p>'; return; }
+  const W = 720, rowH = 26, padL = opts.padL ?? 168, padR = 64, padT = 8;
+  const H = padT + rows.length * rowH + 26;
+  const vals = rows.map(r => r.value);
+  const min = Math.min(0, ...vals), max = Math.max(0, ...vals);
+  const span = (max - min) || 1;
+  const x = v => padL + (v - min) / span * (W - padL - padR);
+  const zero = x(0);
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.title || 'bar chart')}">`;
+  const ticks = 4;
+  for (let i = 0; i <= ticks; i++) {
+    const v = min + span * i / ticks, xv = x(v);
+    s += `<line class="gridline" x1="${xv}" y1="${padT}" x2="${xv}" y2="${padT + rows.length * rowH}"/>`;
+    s += `<text class="tick" x="${xv}" y="${padT + rows.length * rowH + 15}" text-anchor="middle">${fmt(v, opts.dp ?? 0)}</text>`;
+  }
+  rows.forEach((r, i) => {
+    const y = padT + i * rowH + 4, h = rowH - 10;
+    const xv = x(r.value), bx = Math.min(zero, xv), bw = Math.max(1.5, Math.abs(xv - zero));
+    const col = r.color || cssvar(SERIES[0]);
+    s += `<text class="axlabel" x="${padL - 10}" y="${y + h / 2 + 4}" text-anchor="end">${esc(r.label)}</text>`;
+    s += `<rect x="${bx}" y="${y}" width="${bw}" height="${h}" rx="4" fill="${col}"
+             data-i="${i}" class="hbar" style="cursor:pointer"/>`;
+    s += `<text class="dlabel" x="${xv + (r.value < 0 ? -7 : 7)}" y="${y + h / 2 + 4}"
+             text-anchor="${r.value < 0 ? 'end' : 'start'}">${fmt(r.value, opts.dp ?? 1)}${opts.suffix || ''}</text>`;
+  });
+  s += `<line class="axisline" x1="${zero}" y1="${padT}" x2="${zero}" y2="${padT + rows.length * rowH}"/>`;
+  s += `</svg>`;
+  el.innerHTML = s;
+  el.querySelectorAll('.hbar').forEach(node => {
+    const r = rows[+node.dataset.i];
+    node.addEventListener('mousemove', e => showTip(e, r.label,
+      [[opts.valueLabel || 'Value', fmt(r.value, opts.dp ?? 1) + (opts.suffix || '')]]
+        .concat(r.note ? [['', r.note]] : [])));
+    node.addEventListener('mouseleave', hideTip);
+  });
+}
+
+function groupedBars(el, cats, series, opts = {}) {
+  // cats: [label]; series: [{name, color, values:[]}]
+  if (!cats.length) { el.innerHTML = '<p class="empty">No data yet.</p>'; return; }
+  const W = 720, H = 300, padL = 56, padR = 14, padT = 12, padB = 62;
+  const all = series.flatMap(s => s.values).filter(v => v !== null && !Number.isNaN(v));
+  const max = Math.max(1, ...all);
+  const y = v => padT + (1 - v / max) * (H - padT - padB);
+  const bandW = (W - padL - padR) / cats.length;
+  const bw = Math.min(30, (bandW - 12) / series.length);
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.title || 'grouped bars')}">`;
+  for (let i = 0; i <= 4; i++) {
+    const v = max * i / 4, yv = y(v);
+    s += `<line class="gridline" x1="${padL}" y1="${yv}" x2="${W - padR}" y2="${yv}"/>`;
+    s += `<text class="tick" x="${padL - 8}" y="${yv + 4}" text-anchor="end">${fmt(v, opts.dp ?? 0)}</text>`;
+  }
+  cats.forEach((c, ci) => {
+    const cx = padL + ci * bandW + bandW / 2;
+    const total = series.length * bw + (series.length - 1) * 2;
+    series.forEach((se, si) => {
+      const v = se.values[ci];
+      if (v === null || v === undefined || Number.isNaN(v)) return;
+      const bx = cx - total / 2 + si * (bw + 2);
+      const by = y(v), h = Math.max(1.5, y(0) - by);
+      s += `<rect x="${bx}" y="${by}" width="${bw}" height="${h}" rx="4" fill="${se.color}"
+               class="gb" data-c="${ci}" data-s="${si}" style="cursor:pointer"/>`;
+    });
+    const lab = c.length > 13 ? c.slice(0, 12) + '…' : c;
+    s += `<text class="tick" x="${cx}" y="${H - padB + 16}" text-anchor="end"
+             transform="rotate(-38 ${cx} ${H - padB + 16})">${esc(lab)}</text>`;
+  });
+  s += `<line class="axisline" x1="${padL}" y1="${y(0)}" x2="${W - padR}" y2="${y(0)}"/>`;
+  if (opts.yLabel)
+    s += `<text class="axlabel" x="${padL}" y="${padT - 1}" text-anchor="start">${esc(opts.yLabel)}</text>`;
+  s += `</svg>`;
+  el.innerHTML = s;
+  el.querySelectorAll('.gb').forEach(node => {
+    const ci = +node.dataset.c, si = +node.dataset.s;
+    node.addEventListener('mousemove', e => showTip(e, cats[ci],
+      series.map(se => [se.name, fmt(se.values[ci], opts.dp ?? 1) + (opts.suffix || '')])));
+    node.addEventListener('mouseleave', hideTip);
+  });
+}
+
+function lineChart(el, series, opts = {}) {
+  // series: [{name, color, points:[{x:Date-ish string, y}]}]
+  const withData = series.filter(s => s.points.length);
+  if (!withData.length) { el.innerHTML = '<p class="empty">No data yet.</p>'; return; }
+  const W = 720, H = 260, padL = 54, padR = 16, padT = 12, padB = 36;
+  const xs = [...new Set(withData.flatMap(s => s.points.map(p => p.x)))].sort();
+  const ys = withData.flatMap(s => s.points.map(p => p.y));
+  let min = Math.min(...ys), max = Math.max(...ys);
+  if (min === max) { min -= 1; max += 1; }
+  if (opts.zeroBase) min = Math.min(0, min);
+  const pad = (max - min) * 0.08; min -= pad; max += pad;
+  const X = v => padL + xs.indexOf(v) / Math.max(1, xs.length - 1) * (W - padL - padR);
+  const Y = v => padT + (1 - (v - min) / (max - min)) * (H - padT - padB);
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.title || 'line chart')}">`;
+  for (let i = 0; i <= 4; i++) {
+    const v = min + (max - min) * i / 4, yv = Y(v);
+    s += `<line class="gridline" x1="${padL}" y1="${yv}" x2="${W - padR}" y2="${yv}"/>`;
+    s += `<text class="tick" x="${padL - 8}" y="${yv + 4}" text-anchor="end">${fmt(v, opts.dp ?? 1)}</text>`;
+  }
+  const step = Math.ceil(xs.length / 7);
+  xs.forEach((xv, i) => {
+    if (i % step && i !== xs.length - 1) return;
+    s += `<text class="tick" x="${X(xv)}" y="${H - padB + 16}" text-anchor="middle">${esc(String(xv).slice(0, 7))}</text>`;
+  });
+  withData.forEach(se => {
+    const d = se.points.sort((a, b) => String(a.x).localeCompare(String(b.x)))
+      .map((p, i) => `${i ? 'L' : 'M'}${X(p.x).toFixed(1)},${Y(p.y).toFixed(1)}`).join(' ');
+    s += `<path d="${d}" fill="none" stroke="${se.color}" stroke-width="2"
+             stroke-linejoin="round" stroke-linecap="round"/>`;
+    const last = se.points[se.points.length - 1];
+    s += `<circle cx="${X(last.x)}" cy="${Y(last.y)}" r="3.5" fill="${se.color}"
+             stroke="var(--surface-1)" stroke-width="2"/>`;
+  });
+  s += `<line class="axisline" x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}"/>`;
+  // crosshair hit areas
+  xs.forEach(xv => {
+    s += `<rect x="${X(xv) - (W - padL - padR) / xs.length / 2}" y="${padT}"
+             width="${(W - padL - padR) / xs.length}" height="${H - padT - padB}"
+             fill="transparent" class="hit" data-x="${esc(xv)}" style="cursor:crosshair"/>`;
+  });
+  s += `</svg>`;
+  el.innerHTML = s;
+  el.querySelectorAll('.hit').forEach(node => {
+    const xv = node.dataset.x;
+    node.addEventListener('mousemove', e => showTip(e, xv,
+      withData.map(se => {
+        const p = se.points.find(p => String(p.x) === xv);
+        return [se.name, p ? fmt(p.y, opts.dp ?? 1) + (opts.suffix || '') : '—'];
+      })));
+    node.addEventListener('mouseleave', hideTip);
+  });
+}
+
+function legendHTML(items) {
+  return `<div class="legend">` + items.map(i =>
+    `<span><i class="swatch" style="background:${i.color}"></i>${esc(i.name)}</span>`).join('') + `</div>`;
+}
+
+/* ================================================================== *
+ * Sections
+ * ================================================================== */
+function renderMeta() {
+  const el = document.getElementById('metaRow');
+  const asOf = PARAMS?.as_of || DATA?.analysis?.built_at?.slice(0, 10) || '—';
+  const items = [];
+  items.push(`<span class="pill"><span class="dot" style="background:var(--s1)"></span>As of ${esc(asOf)}</span>`);
+
+  const start = PARAMS?.conflict_start_date;
+  if (start) {
+    const days = Math.round((new Date(asOf) - new Date(start)) / 86400000);
+    items.push(`<span class="pill"><span class="dot" style="background:var(--critical)"></span>Day ${days} of the conflict</span>`);
+  }
+  const live = DATA?.live || {};
+  const n = Object.keys(live).length;
+  if (n) {
+    const liveN = Object.values(live).filter(s => s.status === 'live').length;
+    const col = liveN === n ? 'var(--good)' : liveN ? 'var(--warning)' : 'var(--muted)';
+    const when = DATA.live_refreshed_at ? DATA.live_refreshed_at.replace('T', ' ').slice(0, 16) + ' UTC' : '—';
+    items.push(`<span class="pill"><span class="dot" style="background:${col}"></span>
+      Live feed ${liveN}/${n} · ${esc(when)}</span>`);
+  }
+  const c = DATA?.analysis?.counts;
+  if (c) items.push(`<span class="pill"><span class="dot" style="background:var(--s3)"></span>
+    ${c.observations} sourced observations</span>`);
+  el.innerHTML = items.join('');
+}
+
+function kpiCard({ label, value, unit, note }) {
+  return `<div class="card kpi">
+    <div class="label">${esc(label)}</div>
+    <div class="value">${esc(value)}<span class="unit">${esc(unit || '')}</span></div>
+    <div class="note">${esc(note || '')}</div>
+  </div>`;
+}
+
+function renderKPIs() {
+  const el = document.getElementById('kpis');
+  const cards = [];
+
+  const thr = latest(findObs({ country: 'WORLD', metric: 'throughput' }));
+  if (thr) cards.push(kpiCard({
+    label: 'Hormuz throughput', value: fmt(thr.value, 0), unit: '% of normal',
+    note: `${thr.date} · ${thr.quality}`
+  }));
+
+  const liveBrent = DATA?.live?.brent_usd_bbl;
+  if (liveBrent?.latest) cards.push(kpiCard({
+    label: 'Brent', value: fmt(liveBrent.latest.value, 2), unit: '$/bbl',
+    note: `${liveBrent.latest.date} · ${liveBrent.status}`
+  }));
+  else {
+    const b = latest(findObs({ product: 'crude', metric: 'brent' }));
+    if (b) cards.push(kpiCard({
+      label: 'Brent', value: fmt(b.value, 1), unit: '$/bbl', note: `${b.date} · ${b.quality}`
+    }));
+  }
+
+  for (const cc of ['JP', 'CN']) {
+    const rw = table('runway').filter(r => r.country === cc && /crude/i.test(r.product || ''));
+    if (rw.length) {
+      const w = parseFloat(String(rw[0].weeks_of_cover).split('-')[0]);
+      if (!Number.isNaN(w)) cards.push(kpiCard({
+        label: `${cc === 'JP' ? 'Japan' : 'China'} crude runway`,
+        value: fmt(w, 0), unit: 'weeks',
+        note: rw[0].scenario ? `scenario: ${rw[0].scenario}` : ''
+      }));
+    }
+  }
+
+  el.innerHTML = cards.length ? cards.join('')
+    : `<div class="card"><p class="empty">Headline readings appear once the research dataset is built.</p></div>`;
+}
+
+function renderScenario() {
+  if (!PARAMS) return;
+  const sc = scenarioFromControls(state.brent, state.thr, state.policy);
+  const out = document.getElementById('scenarioOut');
+  const countries = Object.keys(PARAMS.countries);
+
+  out.innerHTML = countries.map(cc => {
+    const r = runCountry(cc, sc);
+    const name = PARAMS.countries[cc].name || cc;
+    const rows = [
+      ['GDP impact', fmt(r.gdp_impact_pp, 2) + ' pp'],
+      ['— terms of trade', fmt(r.gdp_parts['Terms of trade'], 2) + ' pp'],
+      ['— rationing', fmt(r.gdp_parts['Rationing'], 2) + ' pp'],
+      ['— policy support', fmt(r.gdp_parts['Policy support'], 2) + ' pp'],
+      ['CPI impact', fmt(r.cpi_impact_pp, 2) + ' pp'],
+      ['Income transfer abroad', fmt(r.total_tot, 2) + ' % of GDP'],
+      ['Supply lost', fmt(r.lost_kbd, 0) + ' kb/d'],
+      ['covered by substitution', fmt(r.substitution_kbd, 0) + ' kb/d'],
+      ['covered by reserve draw', fmt(r.reserve_draw_kbd, 0) + ' kb/d'],
+      ['Voluntary demand response', fmt(r.voluntary_dd_kbd, 0) + ' kb/d'],
+      ['Rationed (involuntary)', fmt(r.involuntary_dd_kbd, 0) + ' kb/d'],
+      ['Demand destroyed', fmt(r.dd_pct, 1) + ' % of oil demand'],
+      ['Reserve runway', r.runway_weeks === null ? 'no draw needed' : fmt(r.runway_weeks, 0) + ' weeks'],
+      ['Binding constraint', r.binding]
+    ];
+    return `<div>
+      <h3 style="font-size:14px;margin:0 0 8px">${esc(name)}</h3>
+      <table>${rows.map(([k, v], i) =>
+        `<tr><td style="${/^—|^covered|^Binding/.test(k) ? 'padding-left:20px;color:var(--text-secondary)' : ''}">${esc(k)}</td>
+             <td class="num">${esc(v)}</td></tr>`).join('')}</table>
+    </div>`;
+  }).join('');
+
+  const anyNote = countries.map(cc => runCountry(cc, sc).notes).flat();
+  document.getElementById('scenarioNote').textContent = anyNote[0] || '';
+}
+
+function renderHeatmap() {
+  const el = document.getElementById('heatmap');
+  if (!PARAMS) { el.innerHTML = '<p class="empty">Parameters not loaded.</p>'; return; }
+  const brents = [70, 85, 100, 115, 130, 150, 180];
+  const thrs = [0, 10, 25, 50, 75, 100];
+  const metric = state.sensMetric, cc = state.sensCountry;
+
+  const cells = [];
+  for (const t of thrs) for (const b of brents) {
+    const r = runCountry(cc, scenarioFromControls(b, t, state.policy));
+    const v = metric === 'gdp_impact_pp' ? r.gdp_impact_pp
+            : metric === 'cpi_impact_pp' ? r.cpi_impact_pp
+            : metric === 'runway_weeks' ? r.runway_weeks
+            : r.involuntary_dd_kbd;
+    cells.push({ b, t, v });
+  }
+  const vals = cells.map(c => c.v).filter(v => v !== null && !Number.isNaN(v));
+  const min = Math.min(...vals), max = Math.max(...vals);
+
+  // Sequential single-hue ramp; magnitude of severity, not identity.
+  const ramp = ['--seq-100','--seq-200','--seq-300','--seq-400','--seq-500','--seq-600','--seq-700'].map(cssvar);
+  const colorOf = v => {
+    if (v === null || Number.isNaN(v)) return 'var(--grid)';
+    // Severity increases as the metric falls for GDP, rises for the others.
+    const norm = (metric === 'gdp_impact_pp' || metric === 'runway_weeks')
+      ? (max - v) / ((max - min) || 1)
+      : (v - min) / ((max - min) || 1);
+    return ramp[Math.min(ramp.length - 1, Math.max(0, Math.round(norm * (ramp.length - 1))))];
+  };
+  const dp = metric === 'involuntary_dd_kbd' ? 0 : metric === 'runway_weeks' ? 0 : 2;
+
+  const W = 720, padL = 92, padT = 26, cw = (W - padL - 16) / brents.length, ch = 40;
+  const H = padT + thrs.length * ch + 34;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="sensitivity heatmap">`;
+  brents.forEach((b, i) =>
+    s += `<text class="tick" x="${padL + i * cw + cw / 2}" y="${padT - 9}" text-anchor="middle">$${b}</text>`);
+  thrs.forEach((t, r) => {
+    s += `<text class="axlabel" x="${padL - 10}" y="${padT + r * ch + ch / 2 + 4}" text-anchor="end">${t}% open</text>`;
+    brents.forEach((b, i) => {
+      const cell = cells.find(c => c.b === b && c.t === t);
+      s += `<rect x="${padL + i * cw + 1}" y="${padT + r * ch + 1}" width="${cw - 2}" height="${ch - 2}"
+               rx="4" fill="${colorOf(cell.v)}" class="hc" data-b="${b}" data-t="${t}" style="cursor:pointer"/>`;
+      // Ink stays in text tokens; the cell fill carries magnitude.
+      const norm = (max - min) ? Math.abs(cell.v - min) / (max - min) : 0;
+      const light = (metric === 'gdp_impact_pp' || metric === 'runway_weeks') ? norm > 0.45 : norm < 0.55;
+      s += `<text x="${padL + i * cw + cw / 2}" y="${padT + r * ch + ch / 2 + 4}" text-anchor="middle"
+               style="font-size:11px;font-variant-numeric:tabular-nums;fill:${light ? '#0b0b0b' : '#ffffff'}">
+               ${cell.v === null ? '—' : fmt(cell.v, dp)}</text>`;
+    });
+  });
+  s += `<text class="axlabel" x="${padL}" y="${H - 10}">Brent, $/bbl  →</text>`;
+  s += `</svg>`;
+  el.innerHTML = s;
+
+  el.querySelectorAll('.hc').forEach(node => {
+    const b = +node.dataset.b, t = +node.dataset.t;
+    node.addEventListener('mousemove', e => {
+      const r = runCountry(cc, scenarioFromControls(b, t, state.policy));
+      showTip(e, `Brent $${b} · ${t}% throughput`, [
+        ['GDP', fmt(r.gdp_impact_pp, 2) + ' pp'],
+        ['CPI', fmt(r.cpi_impact_pp, 2) + ' pp'],
+        ['Runway', r.runway_weeks === null ? 'n/a' : fmt(r.runway_weeks, 0) + ' w'],
+        ['Rationed', fmt(r.involuntary_dd_kbd, 0) + ' kb/d']
+      ]);
+    });
+    node.addEventListener('mouseleave', hideTip);
+  });
+}
+
+function renderSupply() {
+  const el = document.getElementById('supplyCard');
+  const flows = obs().filter(o => /flow|throughput|transit|volume/i.test(o.metric || ''));
+  const products = [...new Set(flows.map(f => f.product).filter(Boolean))];
+  let html = '';
+
+  if (products.length) {
+    const pre = [], cur = [];
+    products.forEach(p => {
+      const rows = flows.filter(f => f.product === p);
+      const b = rows.find(r => /pre.?war|baseline/i.test(r.note + r.metric + r.series_id));
+      const c = rows.find(r => /current|latest|now/i.test(r.note + r.metric + r.series_id));
+      pre.push(b ? b.value : null); cur.push(c ? c.value : null);
+    });
+    if (pre.some(v => v !== null)) {
+      const items = [
+        { name: 'Pre-war', color: cssvar('--s1') },
+        { name: 'Current', color: cssvar('--s2') }
+      ];
+      html += `<h3 style="font-size:14px;margin:0 0 2px">Flows through the strait, by product</h3>`;
+      html += legendHTML(items);
+      html += `<div id="supplyBars"></div>`;
+    }
+  }
+
+  const tl = table('timeline');
+  if (tl.length) {
+    html += `<h3 style="font-size:14px;margin:20px 0 6px">Disruption timeline</h3><div class="scroll"><table>
+      <thead><tr><th>Date</th><th>Event</th><th>Products</th><th>Quantified impact</th><th>Src</th></tr></thead><tbody>` +
+      tl.sort((a, b) => String(a.date).localeCompare(String(b.date))).map(r => `<tr>
+        <td style="white-space:nowrap">${esc(r.date)}</td>
+        <td>${esc(r.event)}</td>
+        <td>${esc(r.products)}</td>
+        <td>${esc(r.quantified_impact)}</td>
+        <td>${r.source_url ? `<a href="${esc(r.source_url)}" target="_blank" rel="noopener">link</a>` : ''}</td>
+      </tr>`).join('') + `</tbody></table></div>`;
+  }
+
+  el.innerHTML = html || '<p class="empty">Supply-disruption data not yet built.</p>';
+
+  const barsEl = document.getElementById('supplyBars');
+  if (barsEl && products.length) {
+    const pre = [], cur = [];
+    products.forEach(p => {
+      const rows = flows.filter(f => f.product === p);
+      const b = rows.find(r => /pre.?war|baseline/i.test(r.note + r.metric + r.series_id));
+      const c = rows.find(r => /current|latest|now/i.test(r.note + r.metric + r.series_id));
+      pre.push(b ? b.value : null); cur.push(c ? c.value : null);
+    });
+    groupedBars(barsEl, products, [
+      { name: 'Pre-war', color: cssvar('--s1'), values: pre },
+      { name: 'Current', color: cssvar('--s2'), values: cur }
+    ], { yLabel: 'flow (native units per product)', dp: 1 });
+  }
+}
+
+function renderReliance() {
+  const el = document.getElementById('relianceCard');
+  const dep = obs().filter(o => /depend|share|import.*share|hormuz/i.test(o.metric || ''));
+  let html = '';
+
+  const products = [...new Set(dep.map(d => d.product).filter(Boolean))].slice(0, 12);
+  if (products.length) {
+    const jp = [], cn = [];
+    products.forEach(p => {
+      jp.push(latest(dep.filter(d => d.product === p && d.country === 'JP'))?.value ?? null);
+      cn.push(latest(dep.filter(d => d.product === p && d.country === 'CN'))?.value ?? null);
+    });
+    html += `<h3 style="font-size:14px;margin:0 0 2px">Import dependence / Hormuz-routed share</h3>`;
+    html += legendHTML([
+      { name: 'Japan', color: cssvar('--s1') }, { name: 'China', color: cssvar('--s2') }
+    ]);
+    html += `<div id="relBars"></div>`;
+  }
+
+  const sub = table('substitutability');
+  if (sub.length) {
+    html += `<h3 style="font-size:14px;margin:20px 0 6px">Substitutability</h3><div class="scroll"><table>
+      <thead><tr><th>Economy</th><th>Product</th><th>Alternative</th><th class="num">Volume</th>
+      <th class="num">Lead time (mo)</th><th>Constraint</th><th>Rating</th></tr></thead><tbody>` +
+      sub.map(r => `<tr>
+        <td>${esc(r.country)}</td><td>${esc(r.product)}</td><td>${esc(r.alt_source)}</td>
+        <td class="num">${esc(r.scalable_volume)} ${esc(r.unit || '')}</td>
+        <td class="num">${esc(r.lead_time_months)}</td>
+        <td>${esc(r.constraint)}</td>
+        <td>${esc(r.substitutability_rating)}</td></tr>`).join('') + `</tbody></table></div>`;
+  }
+
+  el.innerHTML = html || '<p class="empty">Reliance data not yet built.</p>';
+
+  const rb = document.getElementById('relBars');
+  if (rb && products.length) {
+    const jp = [], cn = [];
+    products.forEach(p => {
+      jp.push(latest(dep.filter(d => d.product === p && d.country === 'JP'))?.value ?? null);
+      cn.push(latest(dep.filter(d => d.product === p && d.country === 'CN'))?.value ?? null);
+    });
+    groupedBars(rb, products, [
+      { name: 'Japan', color: cssvar('--s1'), values: jp },
+      { name: 'China', color: cssvar('--s2'), values: cn }
+    ], { yLabel: '% ', suffix: '%', dp: 0 });
+  }
+}
+
+function renderMacro() {
+  const el = document.getElementById('macroCard');
+  let html = '';
+
+  const cpiJP = findObs({ country: 'JP', metric: 'cpi' }).filter(o => o.value !== null);
+  const cpiCN = findObs({ country: 'CN', metric: 'cpi' }).filter(o => o.value !== null);
+  if (cpiJP.length || cpiCN.length) {
+    html += `<h3 style="font-size:14px;margin:0 0 2px">Consumer prices, % year on year</h3>`;
+    html += legendHTML([
+      { name: 'Japan', color: cssvar('--s1') }, { name: 'China', color: cssvar('--s2') }
+    ]);
+    html += `<div id="cpiChart"></div>`;
+  }
+
+  const dd = table('demand_destruction');
+  if (dd.length) {
+    const supply = dd.filter(r => /supply/i.test(r.type_supply_or_price_induced || '')).length;
+    const price = dd.filter(r => /price/i.test(r.type_supply_or_price_induced || '')).length;
+    html += `<div class="warnbox" style="margin-top:18px">
+      <b>${dd.length} recorded instances of demand destruction.</b>
+      ${supply} are supply-constrained curtailment (feedstock unavailable at any price) and
+      ${price} are price-induced (available but uneconomic). The split matters: the first cannot
+      be fixed by subsidy, the second is exactly what subsidy suppresses.</div>`;
+    html += `<div class="scroll"><table>
+      <thead><tr><th>Economy</th><th>Sector</th><th>Entity</th><th>Observation</th>
+      <th class="num">Change</th><th>Type</th><th>Date</th><th>Src</th></tr></thead><tbody>` +
+      dd.map(r => `<tr>
+        <td>${esc(r.country)}</td><td>${esc(r.sector)}</td><td>${esc(r.entity)}</td>
+        <td>${esc(r.observation)}</td>
+        <td class="num">${esc(r.pct_change)}</td>
+        <td>${esc(r.type_supply_or_price_induced)}</td>
+        <td style="white-space:nowrap">${esc(r.date)}</td>
+        <td>${r.source_url ? `<a href="${esc(r.source_url)}" target="_blank" rel="noopener">link</a>` : ''}</td>
+      </tr>`).join('') + `</tbody></table></div>`;
+  }
+
+  el.innerHTML = html || '<p class="empty">Macro data not yet built.</p>';
+
+  const cc = document.getElementById('cpiChart');
+  if (cc) lineChart(cc, [
+    { name: 'Japan', color: cssvar('--s1'),
+      points: cpiJP.map(o => ({ x: o.date, y: o.value })) },
+    { name: 'China', color: cssvar('--s2'),
+      points: cpiCN.map(o => ({ x: o.date, y: o.value })) }
+  ], { suffix: '%', dp: 1 });
+}
+
+function renderPolicy() {
+  const el = document.getElementById('policyCard');
+  const rows = table('policy');
+  if (!rows.length) { el.innerHTML = '<p class="empty">Policy data not yet built.</p>'; return; }
+
+  const probBars = rows
+    .filter(r => r.continuation_probability !== undefined && r.continuation_probability !== '')
+    .map(r => {
+      let p = parseFloat(String(r.continuation_probability).replace('%', ''));
+      if (p <= 1) p *= 100;
+      return { label: `${r.country} · ${String(r.measure).slice(0, 34)}`, value: p,
+               color: p >= 60 ? cssvar('--s1') : cssvar('--s2'), note: r.trigger_condition };
+    }).filter(r => !Number.isNaN(r.value)).slice(0, 14);
+
+  let html = '';
+  if (probBars.length) {
+    html += `<h3 style="font-size:14px;margin:0 0 8px">Probability each measure is still in force at end-2026</h3>
+             <div id="polBars"></div>`;
+  }
+  html += `<h3 style="font-size:14px;margin:20px 0 6px">Measures</h3><div class="scroll"><table>
+    <thead><tr><th>Economy</th><th>Measure</th><th>Category</th><th>Announced</th><th>Expires</th>
+    <th class="num">Size ($bn)</th><th class="num">% GDP</th><th class="num">CPI (pp)</th>
+    <th>Status</th><th>Src</th></tr></thead><tbody>` +
+    rows.map(r => `<tr>
+      <td>${esc(r.country)}</td><td>${esc(r.measure)}</td><td>${esc(r.category)}</td>
+      <td style="white-space:nowrap">${esc(r.announce_date)}</td>
+      <td style="white-space:nowrap">${esc(r.expiry_date)}</td>
+      <td class="num">${esc(r.size_usd_bn)}</td><td class="num">${esc(r.pct_gdp)}</td>
+      <td class="num">${esc(r.est_cpi_effect_pp)}</td><td>${esc(r.status)}</td>
+      <td>${r.source_url ? `<a href="${esc(r.source_url)}" target="_blank" rel="noopener">link</a>` : ''}</td>
+    </tr>`).join('') + `</tbody></table></div>`;
+
+  el.innerHTML = html;
+  const pb = document.getElementById('polBars');
+  if (pb) barChart(pb, probBars, { suffix: '%', dp: 0, valueLabel: 'Probability', padL: 240 });
+}
+
+function renderReserves() {
+  const el = document.getElementById('reserveCard');
+  const rw = table('runway');
+  let html = '';
+
+  if (rw.length) {
+    const bars = rw.map(r => {
+      const w = parseFloat(String(r.weeks_of_cover).split('-')[0]);
+      return { label: `${r.country} · ${r.product} · ${r.scenario || 'base'}`, value: w,
+               color: w < 8 ? cssvar('--critical') : w < 20 ? cssvar('--s2') : cssvar('--s1'),
+               note: r.assumptions };
+    }).filter(r => !Number.isNaN(r.value));
+    if (bars.length) {
+      html += `<h3 style="font-size:14px;margin:0 0 8px">Weeks of usable cover</h3><div id="rwBars"></div>`;
+    }
+    html += `<h3 style="font-size:14px;margin:20px 0 6px">Runway detail</h3><div class="scroll"><table>
+      <thead><tr><th>Economy</th><th>Product</th><th class="num">Usable (mn bbl)</th>
+      <th class="num">Shortfall (kb/d)</th><th class="num">Weeks</th><th>Floor hit</th>
+      <th>Scenario</th><th>Assumptions</th></tr></thead><tbody>` +
+      rw.map(r => `<tr>
+        <td>${esc(r.country)}</td><td>${esc(r.product)}</td>
+        <td class="num">${esc(r.usable_stock_mnbbl)}</td>
+        <td class="num">${esc(r.shortfall_rate_kbd)}</td>
+        <td class="num">${esc(r.weeks_of_cover)}</td>
+        <td style="white-space:nowrap">${esc(r.floor_hit_date)}</td>
+        <td>${esc(r.scenario)}</td><td>${esc(r.assumptions)}</td></tr>`).join('') + `</tbody></table></div>`;
+  }
+
+  const stocks = obs().filter(o => /stock|reserve|inventor/i.test(o.metric || '') && o.value !== null);
+  const jp = stocks.filter(o => o.country === 'JP'), cn = stocks.filter(o => o.country === 'CN');
+  if (jp.length > 1 || cn.length > 1) {
+    html += `<h3 style="font-size:14px;margin:22px 0 2px">Stock drawdown through 2026</h3>`;
+    html += legendHTML([
+      { name: 'Japan', color: cssvar('--s1') }, { name: 'China', color: cssvar('--s2') }
+    ]);
+    html += `<div id="stockChart"></div>`;
+  }
+
+  el.innerHTML = html || '<p class="empty">Reserve data not yet built.</p>';
+
+  const rb = document.getElementById('rwBars');
+  if (rb) {
+    const bars = rw.map(r => {
+      const w = parseFloat(String(r.weeks_of_cover).split('-')[0]);
+      return { label: `${r.country} · ${r.product} · ${r.scenario || 'base'}`, value: w,
+               color: w < 8 ? cssvar('--critical') : w < 20 ? cssvar('--s2') : cssvar('--s1'),
+               note: r.assumptions };
+    }).filter(r => !Number.isNaN(r.value));
+    barChart(rb, bars, { suffix: ' w', dp: 0, valueLabel: 'Weeks of cover', padL: 240 });
+  }
+  const sc = document.getElementById('stockChart');
+  if (sc) lineChart(sc, [
+    { name: 'Japan', color: cssvar('--s1'), points: jp.map(o => ({ x: o.date, y: o.value })) },
+    { name: 'China', color: cssvar('--s2'), points: cn.map(o => ({ x: o.date, y: o.value })) }
+  ], { dp: 0 });
+}
+
+function renderDataTable() {
+  const rows = obs();
+  const fc = document.getElementById('filterCountry'), fp = document.getElementById('filterProduct');
+  if (fc.options.length === 1) {
+    [...new Set(rows.map(r => r.country).filter(Boolean))].sort()
+      .forEach(c => fc.add(new Option(c, c)));
+    [...new Set(rows.map(r => r.product).filter(Boolean))].sort()
+      .forEach(p => fp.add(new Option(p, p)));
+  }
+  const draw = () => {
+    const c = fc.value, p = fp.value, q = document.getElementById('filterQuality').value;
+    const f = rows.filter(r => (!c || r.country === c) && (!p || r.product === p) && (!q || r.quality === q));
+    document.getElementById('dataTable').innerHTML = f.length ? `<table>
+      <thead><tr><th>Economy</th><th>Product</th><th>Metric</th><th class="num">Value</th>
+      <th>Unit</th><th>Date</th><th>Quality</th><th>Source</th></tr></thead><tbody>` +
+      f.slice(0, 600).map(r => `<tr>
+        <td>${esc(r.country)}</td><td>${esc(r.product)}</td><td>${esc(r.metric)}</td>
+        <td class="num">${r.value === null ? esc(r.value_raw || '—') : fmt(r.value, 2)}</td>
+        <td>${esc(r.unit)}</td><td style="white-space:nowrap">${esc(r.date)}</td>
+        <td><span class="q">${esc(r.quality)}</span></td>
+        <td>${r.source_url ? `<a href="${esc(r.source_url)}" target="_blank" rel="noopener">link</a>` : '—'}</td>
+      </tr>`).join('') + `</tbody></table>${f.length > 600 ? `<p class="empty">Showing 600 of ${f.length}.</p>` : ''}`
+      : '<p class="empty">No rows match.</p>';
+  };
+  ['filterCountry','filterProduct','filterQuality'].forEach(id =>
+    document.getElementById(id).addEventListener('change', draw));
+  draw();
+}
+
+function renderParams() {
+  const el = document.getElementById('paramTable');
+  if (!PARAMS) { el.innerHTML = '<p class="empty">No parameters.</p>'; return; }
+  let html = `<table><thead><tr><th>Parameter</th><th>Japan</th><th>China</th><th>Source</th></tr></thead><tbody>`;
+  const walk = (path, obj) => {
+    for (const [k, v] of Object.entries(obj)) {
+      if (v && typeof v === 'object' && !Array.isArray(v)) walk(path.concat(k), v);
+    }
+  };
+  const groups = ['macro','energy','reserves','elasticities','cpi','policy','mitigation'];
+  const jpc = PARAMS.countries.JP || {}, cnc = PARAMS.countries.CN || {};
+  groups.forEach(g => {
+    const keys = new Set([...Object.keys(jpc[g] || {}), ...Object.keys(cnc[g] || {})]);
+    keys.forEach(k => {
+      const src = (PARAMS.sources && PARAMS.sources[`${g}.${k}`]) || '';
+      html += `<tr><td>${esc(g)}.${esc(k)}</td>
+        <td class="num">${esc(jpc[g]?.[k] ?? '—')}</td>
+        <td class="num">${esc(cnc[g]?.[k] ?? '—')}</td>
+        <td>${src ? `<a href="${esc(src)}" target="_blank" rel="noopener">link</a>` : '—'}</td></tr>`;
+    });
+  });
+  html += `</tbody></table>`;
+  el.innerHTML = html;
+}
+
+/* ---------- wiring ---------- */
+function wireControls() {
+  const brent = document.getElementById('brent'), thr = document.getElementById('thr');
+  const bo = document.getElementById('brentOut'), to = document.getElementById('thrOut');
+  const pb = document.getElementById('policyBtn'), preset = document.getElementById('preset');
+
+  const sync = () => {
+    bo.textContent = '$' + state.brent + '/bbl';
+    to.textContent = state.thr + '% of normal';
+    pb.textContent = state.policy ? 'Subsidies active' : 'Subsidies withdrawn';
+    pb.setAttribute('aria-pressed', String(state.policy));
+    renderScenario(); renderHeatmap();
+  };
+  brent.addEventListener('input', () => { state.brent = +brent.value; preset.value = ''; sync(); });
+  thr.addEventListener('input', () => { state.thr = +thr.value; preset.value = ''; sync(); });
+  pb.addEventListener('click', () => { state.policy = !state.policy; sync(); });
+
+  (PARAMS.scenarios || []).forEach(s => preset.add(new Option(s.label, s.key)));
+  preset.add(new Option('Custom', ''), 0);
+  preset.addEventListener('change', () => {
+    const s = (PARAMS.scenarios || []).find(x => x.key === preset.value);
+    if (!s) return;
+    state.brent = s.brent_usd_bbl; state.thr = s.hormuz_throughput_pct;
+    state.policy = s.policy_offset_active;
+    brent.value = state.brent; thr.value = state.thr;
+    sync();
+  });
+
+  const sc = document.getElementById('sensCountry');
+  Object.keys(PARAMS.countries).forEach(c =>
+    sc.add(new Option(PARAMS.countries[c].name || c, c)));
+  sc.value = state.sensCountry;
+  sc.addEventListener('change', () => { state.sensCountry = sc.value; renderHeatmap(); });
+  document.getElementById('sensMetric').addEventListener('change', e => {
+    state.sensMetric = e.target.value; renderHeatmap();
+  });
+
+  const base = (PARAMS.scenarios || [])[1] || (PARAMS.scenarios || [])[0];
+  if (base) {
+    state.brent = base.brent_usd_bbl; state.thr = base.hormuz_throughput_pct;
+    state.policy = base.policy_offset_active; preset.value = base.key;
+  } else {
+    state.brent = PARAMS.baseline.brent_usd_bbl; state.thr = 50;
+  }
+  brent.value = state.brent; thr.value = state.thr;
+  sync();
+}
+
+function renderFooter() {
+  const el = document.getElementById('foot');
+  const c = DATA?.analysis?.counts;
+  const q = c?.by_quality || {};
+  el.innerHTML =
+    `Built ${esc(DATA?.analysis?.built_at || '—')}. ` +
+    (c ? `${c.observations} observations (${Object.entries(q).map(([k, v]) => `${v} ${k}`).join(', ')}). ` : '') +
+    `Quality labels: <b>hard</b> = published official or industry data, <b>est</b> = third-party estimate, ` +
+    `<b>calc</b> = derived here. Scenario outputs are model results, not forecasts — ` +
+    `they show what the stated assumptions imply.`;
+}
+
+async function boot() {
+  try {
+    const res = await fetch('./data.json', { cache: 'no-store' });
+    DATA = await res.json();
+  } catch (e) {
+    // Standalone build: data is inlined by scripts/build_standalone.py.
+    DATA = window.__EMBEDDED_DATA__ || null;
+  }
+  if (!DATA) {
+    document.getElementById('kpis').innerHTML =
+      '<div class="card"><p class="empty">Could not load data.json.</p></div>';
+    return;
+  }
+  PARAMS = DATA.parameters || null;
+
+  renderMeta(); renderKPIs();
+  if (PARAMS) { wireControls(); renderParams(); }
+  else {
+    document.getElementById('scenarioOut').innerHTML =
+      '<p class="empty">Model parameters not present in data.json.</p>';
+  }
+  renderSupply(); renderReliance(); renderMacro(); renderPolicy(); renderReserves();
+  renderDataTable(); renderFooter();
+}
+boot();
+</script>
+</body>
+</html>
