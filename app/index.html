@@ -4,7 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hormuz Shock Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
+  /* Type roles: Plex Serif carries section headings and the hero figures —
+     institutional rather than editorial, which suits commodity research;
+     Plex Sans runs the UI; Plex Mono carries every figure that has to line up
+     in a column. Plex was chosen over the usual grotesques because it reads as
+     a research desk's house face rather than a product landing page. */
+  :root {
+    --font-ui: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-display: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
   :root {
     color-scheme: light;
     --surface-1: #fcfcfb;
@@ -42,11 +55,12 @@
 
   body {
     margin: 0; background: var(--page); color: var(--text-primary);
-    font: 14px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+    font: 14px/1.55 var(--font-ui);
   }
   .wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px; padding-left: 20px; padding-right: 20px; }
   header.top { margin-bottom: 22px; }
-  h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -0.01em; }
+  h1 { font-family: var(--font-display); font-size: 28px; font-weight: 600;
+       line-height: 1.15; margin: 0 0 7px; letter-spacing: -0.012em; text-wrap: balance; }
   .sub { color: var(--text-secondary); margin: 0; max-width: 70ch; }
   .meta-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
   .pill {
@@ -57,7 +71,8 @@
   .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
 
   section { margin-top: 34px; }
-  h2 { font-size: 17px; margin: 0 0 4px; letter-spacing: -0.005em; }
+  h2 { font-family: var(--font-display); font-size: 19px; font-weight: 600;
+       margin: 0 0 5px; letter-spacing: -0.006em; text-wrap: balance; }
   .lede { color: var(--text-secondary); margin: 0 0 14px; max-width: 78ch; font-size: 13px; }
 
   .card {
@@ -69,22 +84,25 @@
   .two { grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); }
 
   .kpi .label { font-size: 11.5px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
-  .kpi .value { font-size: 29px; line-height: 1.1; margin: 7px 0 3px; }
+  .kpi .value { font-family: var(--font-display); font-size: 31px; font-weight: 600;
+                 line-height: 1.05; margin: 8px 0 4px; letter-spacing: -0.015em; }
   .kpi .unit { font-size: 14px; color: var(--text-secondary); margin-left: 3px; }
   .kpi .note { font-size: 11.5px; color: var(--muted); }
 
   table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
   th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--grid); vertical-align: top; }
   th { color: var(--text-secondary); font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.03em; }
-  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.num, th.num { text-align: right; font-family: var(--font-mono);
+                     font-variant-numeric: tabular-nums; font-size: 12px; }
   .scroll { overflow-x: auto; }
 
-  .q { font-size: 10px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); color: var(--text-secondary); }
+  .q { font-family: var(--font-mono); font-size: 10px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); color: var(--text-secondary); }
 
   .controls { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; margin-bottom: 14px; }
   .ctl { display: flex; flex-direction: column; gap: 5px; min-width: 190px; }
   .ctl label { font-size: 11.5px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
-  .ctl output { font-variant-numeric: tabular-nums; color: var(--text-primary); font-size: 15px; }
+  .ctl output { font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+                  color: var(--text-primary); font-size: 15px; font-weight: 500; }
   input[type=range] { width: 100%; accent-color: var(--s1); }
   select, button {
     font: inherit; font-size: 13px; padding: 5px 9px; border-radius: 7px;
@@ -100,9 +118,10 @@
   svg { display: block; width: 100%; height: auto; overflow: visible; }
   .gridline { stroke: var(--grid); stroke-width: 1; }
   .axisline { stroke: var(--axis); stroke-width: 1; }
-  .tick { fill: var(--muted); font-size: 10.5px; }
+  .tick { fill: var(--muted); font-size: 10.5px; font-family: var(--font-mono); }
   .axlabel { fill: var(--text-secondary); font-size: 11px; }
-  .dlabel { fill: var(--text-primary); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .dlabel { fill: var(--text-primary); font-size: 11px; font-family: var(--font-mono);
+             font-variant-numeric: tabular-nums; }
 
   .tooltip {
     position: fixed; pointer-events: none; z-index: 50; opacity: 0;
@@ -112,7 +131,8 @@
   }
   .tooltip .tt-title { font-weight: 600; margin-bottom: 3px; }
   .tooltip .tt-row { color: var(--text-secondary); display: flex; justify-content: space-between; gap: 12px; }
-  .tooltip .tt-row b { color: var(--text-primary); font-variant-numeric: tabular-nums; font-weight: 600; }
+  .tooltip .tt-row b { color: var(--text-primary); font-family: var(--font-mono);
+                        font-variant-numeric: tabular-nums; font-weight: 500; }
 
   details { margin-top: 10px; }
   summary { cursor: pointer; font-size: 12.5px; color: var(--text-secondary); }
@@ -123,7 +143,11 @@
     padding: 10px 13px; border-radius: 0 7px 7px 0; font-size: 12.5px;
     color: var(--text-secondary); margin-bottom: 14px;
   }
-  @media (max-width: 640px) { .kpi .value { font-size: 24px; } h1 { font-size: 21px; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  :where(a, button, select, input, summary):focus-visible {
+    outline: 2px solid var(--s1); outline-offset: 2px; border-radius: 4px;
+  }
+  @media (max-width: 640px) { .kpi .value { font-size: 25px; } h1 { font-size: 22px; } h2 { font-size: 17px; } }
 </style>
 </head>
 <body>
@@ -733,7 +757,7 @@ function renderHeatmap() {
       const norm = (max - min) ? Math.abs(cell.v - min) / (max - min) : 0;
       const light = (metric === 'gdp_impact_pp' || metric === 'runway_weeks') ? norm > 0.45 : norm < 0.55;
       s += `<text x="${padL + i * cw + cw / 2}" y="${padT + r * ch + ch / 2 + 4}" text-anchor="middle"
-               style="font-size:11px;font-variant-numeric:tabular-nums;fill:${light ? '#0b0b0b' : '#ffffff'}">
+               style="font-size:10.5px;font-family:var(--font-mono);font-variant-numeric:tabular-nums;fill:${light ? '#0b0b0b' : '#ffffff'}">
                ${cell.v === null ? '—' : fmt(cell.v, dp)}</text>`;
     });
   });
