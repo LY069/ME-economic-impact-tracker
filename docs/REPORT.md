@@ -81,7 +81,7 @@ story, and it is a crude story.
 tonnes, which METI puts at **about 12 days of use** — but that is 12 days of *total* consumption,
 not 12 days of cover against the shortfall. Only **~11% of Japan's LNG transits Hormuz**, so the
 maximum volume at risk is ~7.3mt/yr. Modelling the balance explicitly, even with **zero**
-re-sourcing and **zero** fuel switching, the stock covers that gap for **112 days** — and with
+re-sourcing and **zero** fuel switching, the stock covers that gap for **about 110 days** — and with
 plausible re-sourcing and the gas-to-coal switching already observed, the volume gap closes
 entirely. Japan's LNG stocks were in fact **12% above the five-year average and rising**, METI
 reports **no requests for emergency supply**, and a new Strategic Buffer LNG programme began
@@ -226,21 +226,23 @@ withdrawal gets harder the longer it runs — Japan's fuel-tax cut is now perman
 | | Japan | China |
 |---|---|---|
 | Total stocks | 248 days / ~458mn bbl (Jan 2026) | ~1,400mn bbl (360 govt + 1,000 commercial) |
-| Usable cushion | ~247mn bbl | ~750mn bbl (before SPR) |
+| Usable cushion | ~270mn bbl (April basis) | ~750mn bbl (before SPR) |
 | Already mobilised | 115–125mn bbl (Mar–May) | 7.14 mb/d gap bridged from stock (May) |
 | Private obligation | cut **70 → 55 days** | — |
 | Crude runway (full closure) | **28–118 weeks** | **15 weeks** at May draw; ~2 years at 1 mb/d |
 | Total stocks, latest | **390mn bbl / 179 days** (30 Apr) | — |
 | **LNG stock** | **2.19mn t = ~12 days of total use** | not published |
 | LNG at risk via Hormuz | ~7.3mt/yr (11% of imports) | ~22mt/yr (30%) |
-| **LNG cover against that gap** | **112+ days** even with no switching | n/a |
+| **LNG cover against that gap** | **~110 days** even with no switching | n/a |
 
 **Naphtha is the binding physical constraint, not LNG — and the previous revision got this
 wrong.** LNG tanks are working inventory rather than a reserve, and 12 days sounds alarming. But
 days-of-total-consumption is the wrong denominator: what matters is cover against the *lost*
 volume, and only ~11% of Japan's LNG comes through Hormuz. Against a maximum ~7.3mt/yr loss, the
-stock lasts 112 days even assuming no re-sourcing and no fuel switching at all — and Japan has
-demonstrably done both. Consistent with that, stocks sat 12% above the five-year average, rose
+stock lasts about 110 days even assuming no re-sourcing and no fuel switching at all — and Japan
+has demonstrably done both. In the model as parameterised the LNG gap is in fact **zero in all four
+scenarios**, because the assumed re-sourcing capacity alone exceeds the worst-case loss; the
+110-day figure is a bounding hand-calculation at zero substitution, not a scenario output. Consistent with that, stocks sat 12% above the five-year average, rose
 10% into March, and METI has received no emergency-supply requests.
 
 What genuinely binds is petrochemical feedstock, and this revision now models it. Japan's
@@ -250,9 +252,9 @@ far thinner than the crude stockpile — about 40% of naphtha is imported direct
 and unlike LNG there is no national reserve and no fuel-switching escape.
 
 **But the same denominator discipline applies here too, and it changes the conclusion's shape.**
-Twenty days is cover against total throughput; against the ~12–15% of supply actually unmet after
-re-sourcing, the stock lasts **138–160 days**, and the polymer buffer behind it (PE and PP
-inventories covering three-plus months of demand) stretches to **620–720 days**. So the
+Twenty days is cover against total throughput; against the ~13–16% of supply actually unmet after
+re-sourcing, the stock lasts **123–150 days**, and the polymer buffer behind it (PE and PP
+inventories covering three-plus months of demand) stretches to **550–670 days**. So the
 petrochemical damage is **not an approaching cliff — it is continuous output loss happening now**:
 crackers running 12–15pp below normal, indefinitely, with the loss showing up as forgone
 production and margin rather than as an exhaustion date. Japan is also importing **~30% more
@@ -294,9 +296,12 @@ correction, not a change of view.** The rationing coefficient was cut from 0.25 
 per 1% forced cut in oil use after checking against published benchmarks: the IMF's April 2026
 adverse scenario puts the GDP loss for the region's major economies at **almost 1pp**, and
 GlobalData puts China at **−0.15 to −0.2pp per sustained $10/bbl**. At 0.25 the model produced a
-Japan hit three to four times the IMF figure. The price channel needed no adjustment — at Brent
-$100 it yields −0.85pp for Japan and about −0.5pp for China, both inside the published ranges, and
-Econbrowser/IMF compute Korea's transfer by the identical method. The CPI channel was also split
+Japan hit three to four times the IMF figure. The price channel now yields **−0.76pp for Japan** (inside the −0.29 to −1.45pp implied by
+GlobalData's importer range) and **−0.46pp for China** (inside the −0.44 to −0.58pp implied by its
+China-specific figure). An earlier draft quoted −0.85 and −0.5 and claimed both passed; the second
+audit found China's actual output was −0.29pp, *outside* its range, so China's multiplier was
+raised to deliver the calibration the parameter file claimed. Econbrowser/IMF compute Korea's
+transfer by the identical method. The CPI channel was also split
 by fuel, because gas reaches households through regulated, lagged tariffs: Japan's base case now
 prints **+2.80pp**, matching the realised position (core CPI 1.8% with subsidies holding ~1.0pp
 off, so ~2.8% ex-subsidy).
@@ -312,14 +317,14 @@ the assumed rationing cost and should be stress-tested, not taken as settled.
 
 **For Japan, subsidy withdrawal does not extend the runway — but treat this as an illustration,
 not a finding.** China's runway lengthens (71 → 90 weeks) when support lapses, while Japan's
-stays pinned at 39 weeks in every variant, because Japan's draw is capped by **deliverability**
+stays pinned at 42.9 weeks in every variant, because Japan's draw is capped by **deliverability**
 rather than by stock size or policy.
 
 The mechanism is worth understanding: once the rate at which reserves can physically be moved
 is what binds, conservation changes *who bears* the shortfall, not how long the reserves last.
-But the number is close to tautological. Japan's 39.2 weeks is just
-247mn bbl ÷ 900 kb/d ÷ 7, and the 900 kb/d deliverability ceiling is **an assumption, not a
-sourced figure** — no such ceiling is published. Whenever the physical gap exceeds that cap the
+But the number is close to tautological. Japan's 42.9 weeks is just
+270mn bbl ÷ 900 kb/d ÷ 7, and while the 900 kb/d ceiling is now calibrated on the observed
+0.75–1.1 mb/d draw rather than assumed outright, no engineering maximum is published. Whenever the physical gap exceeds that cap the
 runway stops varying with scenario severity *by construction*. Change the assumed cap and this
 result changes with it. It belongs in a sensitivity discussion, and it is reported here as one.
 
@@ -329,10 +334,23 @@ draw, runway) and naphtha (loss, re-sourcing, then straight into the cracker ope
 stock and downstream-polymer cover). Building them is what exposed both denominator errors
 corrected above.
 
-The naphtha channel's substitution capacity is **calibrated to reproduce April's observed 67.3%
-cracker rate**, so it fits that month by construction and is not an independent estimate — treat
-its level as anchored and its scenario *variation* as illustrative. China's naphtha exposure could
-not be sourced, so no Chinese naphtha result is produced rather than an invented one.
+**Two caveats on the naphtha channel, both raised by the second audit.**
+
+First, exposure is larger than the directly-imported share alone. Japan imports ~40% of its naphtha
+from the Gulf *and* domestic refining supplies roughly another 40% from crude that was 95%
+ME-sourced — a structural exposure near **78%**, not 40%. The model now carries both parts, but the
+refinery-derived slice is scaled by the *realised* refinery run reduction rather than by Hormuz
+throughput, because the crude channel already determines how much crude arrives; applying
+throughput to both would double-count the same missing barrels. Correcting this raises gross
+naphtha loss from 36% to **41–44% of supply**, not to 78% — the difference being precisely the
+crude Japan successfully re-sourced.
+
+Second, the channel is **under-identified**. One observation (April's 67.3% cracker rate) cannot
+separate substitution capacity from how strongly an unmet gap passes into the operating rate. The
+pass-through is therefore fixed at 1.0 — the Leontief bound, since a cracker cannot process
+feedstock it does not have — and substitution calibrated to 28% of supply. The level fits April by
+construction; treat the scenario *variation* as illustrative. China's naphtha exposure could not be
+sourced, so no Chinese naphtha result is produced rather than an invented one.
 
 **A caution on the CPI column.** These are sustained-shock scenarios measured against a no-shock
 baseline, not nowcasts. The base case shows Japanese CPI +2.49pp while realised core CPI is 1.8%
@@ -346,7 +364,7 @@ answer different questions and should not be read side by side without that cave
 
 | Item | Previous version | Now |
 |---|---|---|
-| **Japan's LNG cover** | "~2–3 weeks, roughly a fortnight of buffer" | **112+ days against the Hormuz-attributable gap.** 12 days is total-consumption cover; only 11% of LNG transits Hormuz |
+| **Japan's LNG cover** | "~2–3 weeks, roughly a fortnight of buffer" | **~110 days against the Hormuz-attributable gap.** 12 days is total-consumption cover; only 11% of LNG transits Hormuz |
 | **The binding physical constraint** | LNG and naphtha | **Naphtha.** LNG is transmitting as price, not volume |
 | **East–West pipeline** | Open question | **Answered:** pumping station destroyed, 5–6 week repair estimate |
 | **China Aug imports** | Three-way conflict (7.2 / 8.9 / 11.65 mb/d), unresolved | **Resolved: 37.93 Mt = 8.93 mb/d**, official GACC customs |
@@ -354,14 +372,45 @@ answer different questions and should not be read side by side without that cave
 | **Japan GDP, base case** | −3.01pp | **−1.81pp**, after recalibrating against IMF and GlobalData |
 | **Japan CPI, base case** | +2.49pp (Brent-driven only) | **+2.80pp**, split by fuel and matched to the realised print |
 | **Deliverability ceiling** | Pure assumption | **Calibrated** on the observed 0.75–1.1 mb/d draw |
-| **Naphtha** | Not modelled at all | **Modelled:** cracker rate 67.3% (record low), 20-day stock = 138–160 days against the actual gap |
+| **Naphtha** | Not modelled at all | **Modelled:** cracker rate 67.3% (record low), 20-day stock = 123–150 days against the actual gap |
 | **Rationing coefficient** | Unanchored assumption | **Bracketed** by the electricity-curtailment literature above and the IMF benchmark below |
-| **Sourced parameters** | 15 of 43 | **35 of 66** |
+| **Sourced parameters** | 15 of 43 | **37 of 72** |
 
 Two of those are corrections to claims this report previously made with more confidence than the
 evidence supported. The LNG one is the more serious: it inverted the report's central judgement
 about which constraint binds, and it was a denominator error of exactly the kind the project's own
 evidence standards warn about — quoting days of cover without stating what they are days *of*.
+
+## What the second audit found
+
+The revision was itself independently audited (`docs/REVIEW2.md`). It found seven material
+problems, all verified and all now fixed:
+
+| Finding | Status |
+|---|---|
+| The v1 review table still said "LNG not modelled", contradicting this same document | **Fixed** — it had not been updated when the channel was added |
+| Naphtha exposure used the directly-imported share only, omitting refinery-derived naphtha | **Fixed** — both parts now modelled; gross loss 36% → 41–44% |
+| The price-channel cross-check did not reproduce; China's output was *outside* its cited range | **Fixed** — China's multiplier raised so the calibration is real, not claimed |
+| The LNG gap is zero in all four scenarios; "112 days" was a hand calc, and recomputes to ~110 | **Fixed** — restated as a bounding calculation, and the zero result disclosed |
+| Sections 5–6 still cited 247mn bbl / 39.2 weeks after the parameter was updated to 270mn | **Fixed** — now 270mn bbl / 42.9 weeks |
+| `renderParams()` never learned the new parameter groups, so ~18 new tags were invisible | **Fixed** — a repeat of the v1 finding; tags rendered went 47 → 73 |
+| "China conflict resolved" overstated: the contradicting rows remained in the repo | **Fixed** — superseded rows now annotated in place |
+
+Two of the audit's points I could only **disclose**, not resolve:
+
+- **Weak sources on load-bearing figures.** Japan's naphtha stock (20 days) and polymer buffer
+  (3 months) come from a trade site, and Japan's oil demand from an aggregator rather than METI or
+  the IEA. All three now carry `est` rather than `hard`, but they still drive results and deserve a
+  primary-source check.
+- **The rationing coefficient's anchor is loose, not tight.** Japan's base case (−1.81pp) is about
+  1.8× the IMF's ~1pp regional benchmark and full closure roughly 3×. Some divergence is expected —
+  the IMF's adverse case is a price scenario with no rationing regime, and full closure is more
+  severe than it — but the benchmark constrains the order of magnitude, not the level. Treat these
+  GDP figures as bounded above by that comparison rather than validated by it.
+
+Independently confirmed as genuinely fixed from the first audit: the crude substitution arithmetic,
+the CPI-suppression mistag, the terms-of-trade double-charge, the Tokyo/national CPI conflation, and
+Python/JS port parity — the last verified line by line, including every new channel.
 
 ## What would change the picture
 
@@ -394,11 +443,13 @@ applied rather than filed:
 | `JP.policy.cpi_suppression_pp` mistagged `hard` | **Fixed** — retagged `est`; the incorrect BOJ attribution removed |
 | A `calc` parameter that did not reproduce from its formula | **Fixed** — 826 → 821 kb/d |
 | Terms-of-trade and rationing double-charged the same missing barrels | **Fixed** — the import bill is now struck on delivered volume only |
-| LNG absent from the model's physical channels | **Disclosed** — stated at the scenario table; not modelled |
+| LNG absent from the model's physical channels | **Fixed in the second pass** — full LNG balance now modelled |
 
-Two findings were disclosed rather than repaired, because repairing them would mean inventing
-the very parameters the study lacks: the model remains crude-only in its physical channels, and
-the CPI channel remains Brent-driven. Both are now stated where the results are presented.
+Two findings were disclosed rather than repaired at the time, because repairing them would have
+meant inventing parameters the study lacked. **Both were subsequently fixed in the second pass:**
+the model is no longer crude-only (LNG and naphtha balances were added) and the CPI channel is no
+longer Brent-driven (it is split by fuel). That revision was then independently audited in turn —
+see `docs/REVIEW2.md` and `## What the second audit found`.
 
 ## Limitations
 
@@ -409,7 +460,7 @@ accordingly.
   revision closed the highest-value gaps (the pipeline, Chinese customs data, Japanese reserve and
   LNG levels, published GDP elasticities) but several series still stop in May–July 2026. Every
   remaining gap is marked `NA` in the data rather than filled by inference.
-- **35 of 66 model parameters are now sourced; 31 remain assumptions.** The GDP and CPI channels
+- **37 of 72 model parameters are now sourced; 35 remain assumptions.** The GDP and CPI channels
   are calibrated against published benchmarks (IMF, GlobalData) and, for Japanese CPI, against the
   realised print. The deliverability ceiling is calibrated on the observed draw rate. What is still
   assumed and still matters: the LNG substitution and fuel-switching capacities, CPI energy

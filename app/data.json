@@ -4288,7 +4288,7 @@
         "parse": "exact",
         "quality": "hard",
         "source_url": "https://www.itiger.com/hans/news/2565328572",
-        "note": "Aug 2026; +4.9% MoM, +0.8% YoY (approx 11.65 mb/d); near-full recovery in volume terms ahead of the 2026-09-11 pipeline shutdown",
+        "note": "Aug 2026; +4.9% MoM, +0.8% YoY (approx 11.65 mb/d); near-full recovery in volume terms ahead of the 2026-09-11 pipeline shutdown | SUPERSEDED: official GACC customs put Aug 2026 at 37.93 Mt = 8.93 mb/d; this figure conflicts and is retained only as the contradicting source.",
         "_source_file": "ws3_macro"
       },
       {
@@ -7198,7 +7198,7 @@
           "type_supply_or_price_induced": "supply recovery (not destruction)",
           "date": "2026-08-31",
           "quality": "hard",
-          "source_url": "https://www.itiger.com/hans/news/2565328572",
+          "source_url": "https://www.itiger.com/hans/news/2565328572 | SUPERSEDED: official GACC customs put Aug 2026 at 37.93 Mt = 8.93 mb/d; this figure conflicts and is retained only as the contradicting source.",
           "_source_file": "ws3_demand_destruction"
         },
         {
@@ -8429,7 +8429,7 @@
         "runway": 12
       }
     },
-    "built_at": "2026-09-15T01:16:20+00:00"
+    "built_at": "2026-09-15T01:37:54+00:00"
   },
   "parameters": {
     "as_of": "2026-09-15",
@@ -8497,10 +8497,13 @@
           "switchable_mt_yr": 12.0
         },
         "naphtha": {
-          "me_dependent_pct": 40.0,
+          "direct_import_me_pct": 40.0,
+          "refinery_derived_share_pct": 40.0,
+          "refinery_crude_me_pct": 95.0,
           "stock_days": 20.0,
           "cracker_rate_prewar_pct": 78.6,
-          "max_substitution_pct": 24.7,
+          "max_substitution_pct": 28.0,
+          "gap_to_cracker_passthrough": 1.0,
           "downstream_buffer_days": 90.0
         }
       },
@@ -8525,7 +8528,7 @@
         },
         "elasticities": {
           "oil_demand_price_elasticity_short_run": -0.05,
-          "tot_transfer_to_gdp_multiplier": 0.35,
+          "tot_transfer_to_gdp_multiplier": 0.55,
           "gdp_pp_per_pct_involuntary_demand_cut": 0.12
         },
         "cpi": {
@@ -8548,10 +8551,13 @@
           "switchable_mt_yr": 30.0
         },
         "naphtha": {
-          "me_dependent_pct": null,
+          "direct_import_me_pct": null,
+          "refinery_derived_share_pct": null,
+          "refinery_crude_me_pct": null,
           "stock_days": null,
           "cracker_rate_prewar_pct": null,
           "max_substitution_pct": null,
+          "gap_to_cracker_passthrough": null,
           "downstream_buffer_days": null
         }
       }
@@ -8640,8 +8646,8 @@
         "basis": "2,360 kb/d x 94.1% Gulf/Hormuz share (both sourced) = 2,221 kb/d."
       },
       "JP.energy.oil_demand_kbd": {
-        "quality": "hard",
-        "basis": "Japan consumption of oil and petroleum products 3,071 kb/d in 2025 (-2.2% y/y). Was assumed at 3,300."
+        "quality": "est",
+        "basis": "Japan consumption 3,071 kb/d in 2025 (-2.2% y/y). Sourced to an aggregator (worldometers) rather than METI or the IEA, so `est` not `hard`; the magnitude is consistent with Japan's known demand but deserves a primary-source check."
       },
       "JP.energy.lng_import_mt_yr": {
         "quality": "hard",
@@ -8741,7 +8747,7 @@
       },
       "CN.elasticities.tot_transfer_to_gdp_multiplier": {
         "quality": "est",
-        "basis": "Calibrated so the price channel reproduces GlobalData's -0.15 to -0.2pp of Chinese GDP per sustained $10/bbl. At Brent $100 (+$29) that implies about -0.5pp, which this multiplier delivers."
+        "basis": "Calibrated so the price channel lands inside GlobalData's -0.15 to -0.2pp of Chinese GDP per sustained $10/bbl, i.e. -0.44 to -0.58pp at Brent $100. At the previous 0.35 the channel produced only -0.29pp, OUTSIDE that range, so the calibration this entry claimed was not actually achieved; 0.55 delivers it."
       },
       "CN.elasticities.gdp_pp_per_pct_involuntary_demand_cut": {
         "quality": "est",
@@ -8835,13 +8841,21 @@
         "quality": "est",
         "basis": "Gas and electricity reach households through REGULATED, lagged tariffs and are directly subsidised, so a wholesale JKM move passes through far less than a pump-price move does. Calibrated so the base scenario reproduces Japan's realised position: core CPI 1.8% with subsidies holding about 1.0pp off implies roughly 2.8% ex-subsidy, which this value delivers. Using the oil pass-through for gas produced +4.7pp, which the realised data contradicts."
       },
-      "JP.naphtha.me_dependent_pct": {
+      "JP.naphtha.direct_import_me_pct": {
         "quality": "hard",
-        "basis": "Japan imports about 40% of its naphtha from the Middle East. (Its exposure is larger still: 95% of the crude used in domestic refining was ME-sourced, and that refining supplies roughly another 40% of naphtha demand — so 40% is the directly-imported slice, not total exposure.)"
+        "basis": "Japan imports about 40% of its naphtha directly from the Middle East."
+      },
+      "JP.naphtha.refinery_derived_share_pct": {
+        "quality": "hard",
+        "basis": "Domestic refining supplies roughly another 40% of naphtha demand. Scaled in the model by the realised refinery run reduction rather than by Hormuz throughput, because the crude channel already determines how much crude arrives - applying throughput to both slices would double-count the same missing barrels."
+      },
+      "JP.naphtha.refinery_crude_me_pct": {
+        "quality": "hard",
+        "basis": "95% of the crude used in Japanese refining was ME-sourced pre-war. Recorded for context: it sets the STRUCTURAL exposure (~78% of naphtha is ME-linked) but not the realised loss, since Japan re-sourced crude and kept runs at 67-77%."
       },
       "JP.naphtha.stock_days": {
-        "quality": "hard",
-        "basis": "Domestic private naphtha inventory is only 20 days, far thinner than the crude stockpile. This is the study's identified binding physical constraint."
+        "quality": "est",
+        "basis": "Private naphtha inventory of 20 days. Reported by a trade site rather than a statistical agency, so downgraded from `hard`; it is load-bearing and deserves a primary-source check."
       },
       "JP.naphtha.cracker_rate_prewar_pct": {
         "quality": "calc",
@@ -8849,31 +8863,47 @@
       },
       "JP.naphtha.max_substitution_pct": {
         "quality": "calc",
-        "basis": "CALIBRATED to the observed outturn: at roughly 10% Hormuz throughput in April 2026 the directly-exposed naphtha loss is 40% x 0.90 = 36% of supply, yet the cracker rate fell only 11.3pp. Treating the unmet feedstock gap as passing 1:1 into the cracker rate implies 24.7% of supply was re-sourced (alternative naphtha, LPG cracking, domestic refinery output). The model reproduces the 67.3% April rate by construction, so this is a fit to one observation, not an independent estimate."
+        "basis": "CALIBRATED to April 2026: corrected gross loss is 39.3% of supply (36.0 direct + 3.3 refinery-derived), and the observed cracker decline was 11.3pp, so 28.0% of supply must have been re-sourced. UNDER-IDENTIFIED: one observation cannot separate this from the pass-through coefficient, which is fixed at 1.0 by assumption. The level therefore fits April by construction; the scenario variation is illustrative."
+      },
+      "JP.naphtha.gap_to_cracker_passthrough": {
+        "quality": "assumption",
+        "basis": "Fixed at 1.0, the Leontief bound - a cracker cannot process feedstock it does not have. Below 1.0 would represent inventory draw and yield flexibility. Held fixed because one observation cannot identify both this and the substitution capacity."
       },
       "JP.naphtha.downstream_buffer_days": {
-        "quality": "hard",
-        "basis": "Polyethylene and polypropylene inventories cover more than three months of domestic demand, so a cracker cut does not reach end users immediately."
+        "quality": "est",
+        "basis": "PE and PP inventories reported to cover three-plus months of demand. Trade-site source, so `est` not `hard`."
       },
-      "CN.naphtha.me_dependent_pct": {
+      "CN.naphtha.direct_import_me_pct": {
         "quality": "assumption",
-        "basis": "Not sourced for China; left null so no Chinese naphtha result is produced rather than inventing one."
+        "basis": "Not sourced for China; left null so no Chinese naphtha result is produced."
+      },
+      "CN.naphtha.refinery_derived_share_pct": {
+        "quality": "assumption",
+        "basis": "Not sourced for China; left null so no Chinese naphtha result is produced."
+      },
+      "CN.naphtha.refinery_crude_me_pct": {
+        "quality": "assumption",
+        "basis": "Not sourced for China; left null so no Chinese naphtha result is produced."
       },
       "CN.naphtha.stock_days": {
         "quality": "assumption",
-        "basis": "Not sourced for China; left null so no Chinese naphtha result is produced rather than inventing one."
+        "basis": "Not sourced for China; left null so no Chinese naphtha result is produced."
       },
       "CN.naphtha.cracker_rate_prewar_pct": {
         "quality": "assumption",
-        "basis": "Not sourced for China; left null so no Chinese naphtha result is produced rather than inventing one."
+        "basis": "Not sourced for China; left null so no Chinese naphtha result is produced."
       },
       "CN.naphtha.max_substitution_pct": {
         "quality": "assumption",
-        "basis": "Not sourced for China; left null so no Chinese naphtha result is produced rather than inventing one."
+        "basis": "Not sourced for China; left null so no Chinese naphtha result is produced."
+      },
+      "CN.naphtha.gap_to_cracker_passthrough": {
+        "quality": "assumption",
+        "basis": "Not sourced for China; left null so no Chinese naphtha result is produced."
       },
       "CN.naphtha.downstream_buffer_days": {
         "quality": "assumption",
-        "basis": "Not sourced for China; left null so no Chinese naphtha result is produced rather than inventing one."
+        "basis": "Not sourced for China; left null so no Chinese naphtha result is produced."
       }
     },
     "sources": {
@@ -8891,9 +8921,10 @@
       "The LNG channel now models a physical balance and runway, but its substitution and fuel-switching capacities are assumed, and China's LNG stock is not published so no Chinese LNG runway is computed.",
       "GDP is expressed in USD via fixed FX (USDJPY 150, USDCNY 7.0); a 10% FX error moves every %-of-GDP result by about 10%.",
       "The CPI channel is calibrated so the base scenario reproduces Japan's realised core CPI (1.8%, about 2.8% ex-subsidy). Gas pass-through is set well below oil pass-through to reflect regulated, lagged utility tariffs. China's equivalent is not calibrated against a realised print.",
-      "The naphtha channel's substitution capacity is calibrated to reproduce one observed data point (April 2026's 67.3% cracker rate), so it fits that month by construction and is not independently estimated.",
       "China's naphtha exposure could not be sourced, so no Chinese naphtha result is computed.",
-      "The rationing coefficient (0.12) is bracketed by the electricity-curtailment literature above and the IMF scenario benchmark below, but no direct estimate for oil rationing exists."
+      "The rationing coefficient (0.12) is bracketed by the electricity-curtailment literature above and the IMF scenario benchmark below, but no direct estimate for oil rationing exists.",
+      "The naphtha channel is UNDER-IDENTIFIED: one observation (April's 67.3% cracker rate) cannot separate substitution capacity from gap-to-cracker pass-through, so pass-through is fixed at 1.0 and substitution calibrated. Its level fits April by construction; treat scenario variation as illustrative.",
+      "Japan's naphtha stock (20 days) and polymer buffer (3 months) come from a trade site rather than a statistical agency and are load-bearing; both are tagged `est` pending a primary source."
     ],
     "fx": {
       "usdjpy": 150.0,

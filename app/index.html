@@ -405,13 +405,21 @@ function runCountry(country, sc) {
   // Naphtha / petrochemical feedstock balance — mirrors scenario_model.py.
   // No national reserve and no fuel-switching escape: unmet feedstock passes
   // straight into the cracker operating rate.
+  // Exposure has two parts: directly-imported Gulf naphtha, which scales with
+  // Hormuz throughput, plus refinery-derived naphtha, which scales with the
+  // realised run reduction the crude channel already computed. Applying
+  // throughput to both would double-count the same missing barrels.
   const naph = c.naphtha || {};
   let naphLossPct = null, naphGapPct = null, crackerRate = null,
       naphStockDays = null, naphDownstreamDays = null;
-  if (naph.me_dependent_pct !== null && naph.me_dependent_pct !== undefined) {
-    naphLossPct = naph.me_dependent_pct * (1 - sc.hormuz_throughput_pct / 100);
+  if (naph.direct_import_me_pct !== null && naph.direct_import_me_pct !== undefined) {
+    const directLoss = naph.direct_import_me_pct * (1 - sc.hormuz_throughput_pct / 100);
+    const runReduction = demand ? involuntary / demand : 0;
+    const refineryLoss = (naph.refinery_derived_share_pct || 0) * runReduction;
+    naphLossPct = directLoss + refineryLoss;
     naphGapPct = Math.max(0, naphLossPct - (naph.max_substitution_pct || 0));
-    crackerRate = Math.max(0, (naph.cracker_rate_prewar_pct || 0) - naphGapPct);
+    const passthrough = naph.gap_to_cracker_passthrough ?? 1;
+    crackerRate = Math.max(0, (naph.cracker_rate_prewar_pct || 0) - naphGapPct * passthrough);
     // Stock covers the LOST fraction, not total throughput.
     if (naphGapPct > 0) {
       naphStockDays = (naph.stock_days || 0) / (naphGapPct / 100);
@@ -1157,7 +1165,10 @@ function renderParams() {
     <th class="num">China</th><th>CN basis</th>
     <th>Source</th></tr></thead><tbody>`;
 
-  const groups = ['macro','energy','reserves','elasticities','cpi','policy','mitigation'];
+  // Must list every group in parameters.json, or new parameters silently
+  // vanish from the audit table while the report claims they are tagged.
+  const groups = ['macro','energy','reserves','elasticities','cpi','policy',
+                  'mitigation','lng','naphtha'];
   const jpc = PARAMS.countries.JP || {}, cnc = PARAMS.countries.CN || {};
   groups.forEach(g => {
     const keys = new Set([...Object.keys(jpc[g] || {}), ...Object.keys(cnc[g] || {})]);

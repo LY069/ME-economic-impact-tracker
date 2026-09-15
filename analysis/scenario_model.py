@@ -267,8 +267,17 @@ def run_country(params: dict, country: str, sc: Scenario) -> CountryResult:
     # feedstock it does not have, so the unmet gap passes straight into the
     # operating rate. The downstream polymer buffer is what delays the shock
     # reaching end users.
+    # Exposure has TWO parts, and collapsing them to the directly-imported
+    # share alone understated it by about half. Japan imports ~40% of its
+    # naphtha from the Gulf directly, AND domestic refining supplies roughly
+    # another 40% of demand from crude that was 95% ME-sourced. The second part
+    # cannot simply be added at the Hormuz throughput rate, though: the crude
+    # channel above already determines how much crude actually arrives, so the
+    # refinery-derived slice is scaled by the realised run reduction instead.
+    # Adding both at full throughput sensitivity would double-count the same
+    # missing barrels.
     naph = c.get("naphtha") or {}
-    naph_dep = naph.get("me_dependent_pct")
+    naph_dep = naph.get("direct_import_me_pct")
     if naph_dep is None:
         naphtha_supply_loss_pct = None
         naphtha_gap_pct = None
@@ -276,12 +285,25 @@ def run_country(params: dict, country: str, sc: Scenario) -> CountryResult:
         naphtha_stock_runway_days = None
         naphtha_downstream_runway_days = None
     else:
-        naphtha_supply_loss_pct = naph_dep * (1.0 - sc.hormuz_throughput_pct / 100.0)
+        direct_loss = naph_dep * (1.0 - sc.hormuz_throughput_pct / 100.0)
+        # Refinery-derived naphtha falls with the realised run reduction, which
+        # the crude channel has already computed as involuntary demand loss.
+        run_reduction = (
+            involuntary_dd_kbd / oil_demand_kbd if oil_demand_kbd else 0.0
+        )
+        refinery_loss = (naph.get("refinery_derived_share_pct") or 0.0) * run_reduction
+        naphtha_supply_loss_pct = direct_loss + refinery_loss
         naphtha_gap_pct = max(
             0.0, naphtha_supply_loss_pct - (naph.get("max_substitution_pct") or 0.0)
         )
         prewar_rate = naph.get("cracker_rate_prewar_pct") or 0.0
-        implied_cracker_rate_pct = max(0.0, prewar_rate - naphtha_gap_pct)
+        # Pass-through of an unmet feedstock gap into the operating rate. 1.0 is
+        # the Leontief bound (you cannot crack what you do not have); below 1.0
+        # represents inventory draw and yield flexibility at the cracker.
+        passthrough = naph.get("gap_to_cracker_passthrough")
+        if passthrough is None:
+            passthrough = 1.0
+        implied_cracker_rate_pct = max(0.0, prewar_rate - naphtha_gap_pct * passthrough)
         # Stock covers the LOST fraction, not total throughput — the same
         # distinction that made the earlier 12-day LNG reading wrong.
         stock_days = naph.get("stock_days") or 0.0
