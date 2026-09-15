@@ -8098,9 +8098,9 @@
       "source_url": "https://stooq.com/q/?s=cb.f",
       "observations": [],
       "latest": null,
-      "status": "unavailable",
-      "last_error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
-      "last_attempt_at": "2026-09-14T13:42:02+00:00"
+      "status": "stale",
+      "last_error": "RuntimeError: empty series",
+      "last_attempt_at": "2026-09-15T11:39:41+00:00"
     },
     "wti_usd_bbl": {
       "label": "WTI crude",
@@ -8109,9 +8109,9 @@
       "source_url": "https://stooq.com/q/?s=cl.f",
       "observations": [],
       "latest": null,
-      "status": "unavailable",
-      "last_error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
-      "last_attempt_at": "2026-09-14T13:42:02+00:00"
+      "status": "stale",
+      "last_error": "RuntimeError: empty series",
+      "last_attempt_at": "2026-09-15T11:39:41+00:00"
     },
     "henry_hub_usd_mmbtu": {
       "label": "Henry Hub natural gas",
@@ -8120,9 +8120,9 @@
       "source_url": "https://stooq.com/q/?s=ng.f",
       "observations": [],
       "latest": null,
-      "status": "unavailable",
-      "last_error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
-      "last_attempt_at": "2026-09-14T13:42:02+00:00"
+      "status": "stale",
+      "last_error": "RuntimeError: empty series",
+      "last_attempt_at": "2026-09-15T11:39:41+00:00"
     },
     "usdjpy": {
       "label": "USD/JPY",
@@ -8131,9 +8131,9 @@
       "source_url": "https://stooq.com/q/?s=usdjpy",
       "observations": [],
       "latest": null,
-      "status": "unavailable",
-      "last_error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
-      "last_attempt_at": "2026-09-14T13:42:02+00:00"
+      "status": "stale",
+      "last_error": "RuntimeError: empty series",
+      "last_attempt_at": "2026-09-15T11:39:41+00:00"
     },
     "usdcny": {
       "label": "USD/CNY",
@@ -8142,9 +8142,9 @@
       "source_url": "https://stooq.com/q/?s=usdcny",
       "observations": [],
       "latest": null,
-      "status": "unavailable",
-      "last_error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
-      "last_attempt_at": "2026-09-14T13:42:02+00:00"
+      "status": "stale",
+      "last_error": "RuntimeError: empty series",
+      "last_attempt_at": "2026-09-15T11:39:41+00:00"
     },
     "jp_cpi_yoy": {
       "label": "Japan CPI, all items, YoY",
@@ -8153,9 +8153,9 @@
       "source_url": "https://fred.stlouisfed.org/series/JPNCPIALLMINMEI",
       "observations": [],
       "latest": null,
-      "status": "unavailable",
+      "status": "stale",
       "last_error": "RuntimeError: FRED_API_KEY not set",
-      "last_attempt_at": "2026-09-14T13:42:02+00:00"
+      "last_attempt_at": "2026-09-15T11:39:41+00:00"
     },
     "brent_spot_eia": {
       "label": "Brent spot (EIA official)",
@@ -8164,12 +8164,12 @@
       "source_url": "https://www.eia.gov/opendata/",
       "observations": [],
       "latest": null,
-      "status": "unavailable",
+      "status": "stale",
       "last_error": "RuntimeError: EIA_API_KEY not set",
-      "last_attempt_at": "2026-09-14T13:42:02+00:00"
+      "last_attempt_at": "2026-09-15T11:39:41+00:00"
     }
   },
-  "live_refreshed_at": "2026-09-14T13:42:02+00:00",
+  "live_refreshed_at": "2026-09-15T11:39:41+00:00",
   "live_status": {
     "refreshed": 0,
     "failed": 7,
