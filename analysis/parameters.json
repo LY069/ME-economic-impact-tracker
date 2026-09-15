@@ -62,6 +62,13 @@
         "stock_days_of_use": 12.0,
         "max_substitution_mt_yr": 8.0,
         "switchable_mt_yr": 12.0
+      },
+      "naphtha": {
+        "me_dependent_pct": 40.0,
+        "stock_days": 20.0,
+        "cracker_rate_prewar_pct": 78.6,
+        "max_substitution_pct": 24.7,
+        "downstream_buffer_days": 90.0
       }
     },
     "CN": {
@@ -106,6 +113,13 @@
         "stock_days_of_use": null,
         "max_substitution_mt_yr": 12.0,
         "switchable_mt_yr": 30.0
+      },
+      "naphtha": {
+        "me_dependent_pct": null,
+        "stock_days": null,
+        "cracker_rate_prewar_pct": null,
+        "max_substitution_pct": null,
+        "downstream_buffer_days": null
       }
     }
   },
@@ -225,8 +239,8 @@
       "basis": "Calibrated against GlobalData's 0.1-0.5pp per $10/bbl range for major net energy importers (0.3pp midpoint used as the Japan proxy; no Japan-specific figure found). Independently, Econbrowser/IMF compute Korea's transfer as 4ppt x 0.67 = 2.7ppt of GDP by the same method this model uses."
     },
     "JP.elasticities.gdp_pp_per_pct_involuntary_demand_cut": {
-      "quality": "assumption",
-      "basis": "RECALIBRATED from 0.25 to 0.12. The IMF's April 2026 adverse scenario puts the GDP loss for the region's major economies at almost 1pp in 2026; at 0.25 this model produced a Japan hit of -3 to -4.5pp, three to four times that benchmark. 0.12 is consistent with oil being a low-single-digit share of GDP by value, with priority allocation protecting the highest-value uses first, and with fuel switching absorbing part of any shortfall. Still an assumption: no published output elasticity to rationed oil was found, and the IMF scenario is price-based rather than a rationing regime, so some divergence is expected."
+      "quality": "est",
+      "basis": "0.12pp of GDP per 1% forced cut in oil use. Now anchored in two directions. Upper bound: the electricity-curtailment literature puts market-equilibrium losses at under 0.05% to 2-4% of GDP (implying roughly 0.2-0.4 per 1% curtailment), with disequilibrium allocation quadrupling that — but electricity is an upper bound for oil, which is storable, substitutable and priority-allocated, so a value below that range is appropriate. Lower bound / total check: the IMF's April 2026 adverse scenario puts the regional GDP loss at almost 1pp, which the original 0.25 overshot three to four fold. Upgraded from `assumption` to `est`: still the least-evidenced parameter, but no longer an unanchored guess."
     },
     "JP.cpi.energy_weight_pct": {
       "quality": "assumption",
@@ -297,8 +311,8 @@
       "basis": "Calibrated so the price channel reproduces GlobalData's -0.15 to -0.2pp of Chinese GDP per sustained $10/bbl. At Brent $100 (+$29) that implies about -0.5pp, which this multiplier delivers."
     },
     "CN.elasticities.gdp_pp_per_pct_involuntary_demand_cut": {
-      "quality": "assumption",
-      "basis": "RECALIBRATED from 0.25 to 0.12. The IMF's April 2026 adverse scenario puts the GDP loss for the region's major economies at almost 1pp in 2026; at 0.25 this model produced a Japan hit of -3 to -4.5pp, three to four times that benchmark. 0.12 is consistent with oil being a low-single-digit share of GDP by value, with priority allocation protecting the highest-value uses first, and with fuel switching absorbing part of any shortfall. Still an assumption: no published output elasticity to rationed oil was found, and the IMF scenario is price-based rather than a rationing regime, so some divergence is expected."
+      "quality": "est",
+      "basis": "0.12pp of GDP per 1% forced cut in oil use. Now anchored in two directions. Upper bound: the electricity-curtailment literature puts market-equilibrium losses at under 0.05% to 2-4% of GDP (implying roughly 0.2-0.4 per 1% curtailment), with disequilibrium allocation quadrupling that — but electricity is an upper bound for oil, which is storable, substitutable and priority-allocated, so a value below that range is appropriate. Lower bound / total check: the IMF's April 2026 adverse scenario puts the regional GDP loss at almost 1pp, which the original 0.25 overshot three to four fold. Upgraded from `assumption` to `est`: still the least-evidenced parameter, but no longer an unanchored guess."
     },
     "CN.cpi.energy_weight_pct": {
       "quality": "assumption",
@@ -387,6 +401,46 @@
     "CN.cpi.gas_retail_passthrough": {
       "quality": "est",
       "basis": "Gas and electricity reach households through REGULATED, lagged tariffs and are directly subsidised, so a wholesale JKM move passes through far less than a pump-price move does. Calibrated so the base scenario reproduces Japan's realised position: core CPI 1.8% with subsidies holding about 1.0pp off implies roughly 2.8% ex-subsidy, which this value delivers. Using the oil pass-through for gas produced +4.7pp, which the realised data contradicts."
+    },
+    "JP.naphtha.me_dependent_pct": {
+      "quality": "hard",
+      "basis": "Japan imports about 40% of its naphtha from the Middle East. (Its exposure is larger still: 95% of the crude used in domestic refining was ME-sourced, and that refining supplies roughly another 40% of naphtha demand — so 40% is the directly-imported slice, not total exposure.)"
+    },
+    "JP.naphtha.stock_days": {
+      "quality": "hard",
+      "basis": "Domestic private naphtha inventory is only 20 days, far thinner than the crude stockpile. This is the study's identified binding physical constraint."
+    },
+    "JP.naphtha.cracker_rate_prewar_pct": {
+      "quality": "calc",
+      "basis": "April 2025 baseline = April 2026's record-low 67.3% plus the reported 11.3pp y/y decline."
+    },
+    "JP.naphtha.max_substitution_pct": {
+      "quality": "calc",
+      "basis": "CALIBRATED to the observed outturn: at roughly 10% Hormuz throughput in April 2026 the directly-exposed naphtha loss is 40% x 0.90 = 36% of supply, yet the cracker rate fell only 11.3pp. Treating the unmet feedstock gap as passing 1:1 into the cracker rate implies 24.7% of supply was re-sourced (alternative naphtha, LPG cracking, domestic refinery output). The model reproduces the 67.3% April rate by construction, so this is a fit to one observation, not an independent estimate."
+    },
+    "JP.naphtha.downstream_buffer_days": {
+      "quality": "hard",
+      "basis": "Polyethylene and polypropylene inventories cover more than three months of domestic demand, so a cracker cut does not reach end users immediately."
+    },
+    "CN.naphtha.me_dependent_pct": {
+      "quality": "assumption",
+      "basis": "Not sourced for China; left null so no Chinese naphtha result is produced rather than inventing one."
+    },
+    "CN.naphtha.stock_days": {
+      "quality": "assumption",
+      "basis": "Not sourced for China; left null so no Chinese naphtha result is produced rather than inventing one."
+    },
+    "CN.naphtha.cracker_rate_prewar_pct": {
+      "quality": "assumption",
+      "basis": "Not sourced for China; left null so no Chinese naphtha result is produced rather than inventing one."
+    },
+    "CN.naphtha.max_substitution_pct": {
+      "quality": "assumption",
+      "basis": "Not sourced for China; left null so no Chinese naphtha result is produced rather than inventing one."
+    },
+    "CN.naphtha.downstream_buffer_days": {
+      "quality": "assumption",
+      "basis": "Not sourced for China; left null so no Chinese naphtha result is produced rather than inventing one."
     }
   },
   "sources": {
@@ -401,11 +455,12 @@
     "Product prices are scaled off Brent with near-unity betas in the interactive grid; in reality naphtha and LPG have moved further than crude in this episode, so the grid understates the petrochemical channel.",
     "China's reserve position rests on commercial estimates throughout, since no official data is published.",
     "LNG conversion factors (52 mmbtu/t, 1.36 bcm/mt) are standard conventions, not sourced this session.",
-    "The rationing coefficient was recalibrated from 0.25 to 0.12 pp of GDP per 1% forced cut in oil use, after the IMF's adverse-scenario benchmark (~1pp for the region) showed the original value produced Japan results three to four times too large. It remains the single least-evidenced parameter in the model.",
     "The LNG channel now models a physical balance and runway, but its substitution and fuel-switching capacities are assumed, and China's LNG stock is not published so no Chinese LNG runway is computed.",
-    "Naphtha is still absent from the physical channels, so the petrochemical feedstock constraint is represented only through the CPI pass-through term.",
     "GDP is expressed in USD via fixed FX (USDJPY 150, USDCNY 7.0); a 10% FX error moves every %-of-GDP result by about 10%.",
-    "The CPI channel is calibrated so the base scenario reproduces Japan's realised core CPI (1.8%, about 2.8% ex-subsidy). Gas pass-through is set well below oil pass-through to reflect regulated, lagged utility tariffs. China's equivalent is not calibrated against a realised print."
+    "The CPI channel is calibrated so the base scenario reproduces Japan's realised core CPI (1.8%, about 2.8% ex-subsidy). Gas pass-through is set well below oil pass-through to reflect regulated, lagged utility tariffs. China's equivalent is not calibrated against a realised print.",
+    "The naphtha channel's substitution capacity is calibrated to reproduce one observed data point (April 2026's 67.3% cracker rate), so it fits that month by construction and is not independently estimated.",
+    "China's naphtha exposure could not be sourced, so no Chinese naphtha result is computed.",
+    "The rationing coefficient (0.12) is bracketed by the electricity-curtailment literature above and the IMF scenario benchmark below, but no direct estimate for oil rationing exists."
   ],
   "fx": {
     "usdjpy": 150.0,

@@ -243,10 +243,23 @@ stock lasts 112 days even assuming no re-sourcing and no fuel switching at all �
 demonstrably done both. Consistent with that, stocks sat 12% above the five-year average, rose
 10% into March, and METI has received no emergency-supply requests.
 
-What genuinely binds is petrochemical feedstock. Naphtha crackers were cutting runs from March,
-on stocks measured in weeks, with force majeure at named plants — and unlike LNG there is no
-national naphtha reserve and no fuel-switching escape. The LNG shock is a *price* shock
-(JKM +118% y/y), which is a terms-of-trade problem, not a rationing one.
+What genuinely binds is petrochemical feedstock, and this revision now models it. Japan's
+**ethylene cracker rate hit a record-low 67.3% in April** (−11.3pp y/y, from a then-record 68.8%
+in March), with **ethylene output down 38.8% y/y**. Private naphtha inventory is **20 days** —
+far thinner than the crude stockpile — about 40% of naphtha is imported directly from the Gulf,
+and unlike LNG there is no national reserve and no fuel-switching escape.
+
+**But the same denominator discipline applies here too, and it changes the conclusion's shape.**
+Twenty days is cover against total throughput; against the ~12–15% of supply actually unmet after
+re-sourcing, the stock lasts **138–160 days**, and the polymer buffer behind it (PE and PP
+inventories covering three-plus months of demand) stretches to **620–720 days**. So the
+petrochemical damage is **not an approaching cliff — it is continuous output loss happening now**:
+crackers running 12–15pp below normal, indefinitely, with the loss showing up as forgone
+production and margin rather than as an exhaustion date. Japan is also importing **~30% more
+Chinese chemicals**, at six-year highs, which relocates the value added rather than replacing it.
+
+The LNG shock, by contrast, is a *price* shock (JKM +118% y/y) — a terms-of-trade problem, not a
+rationing one.
 
 Two caveats on the numbers above, both material. Japan's 28–118 week range is wide because **no
 Japanese crude-import or refinery-run figure after 2026-05-09 could be sourced** — that single
@@ -310,13 +323,16 @@ sourced figure** — no such ceiling is published. Whenever the physical gap exc
 runway stops varying with scenario severity *by construction*. Change the assumed cap and this
 result changes with it. It belongs in a sensitivity discussion, and it is reported here as one.
 
-**The engine now models LNG physically, and naphtha still not at all.** The previous revision's
-physical channels ran on crude alone. LNG now has a full balance — loss, re-sourcing, fuel
-switching, stock draw and a runway in days — and building it is what exposed the 12-day error
-corrected above. **Naphtha remains absent from the physical channels**, represented only through
-the CPI pass-through term, so the constraint this report now identifies as the genuinely binding
-one is still not modelled. That is the largest remaining gap between the narrative and the
-quantitative deliverable.
+**The engine now models both LNG and naphtha physically.** The first revision's physical channels
+ran on crude alone. Both product balances now exist: LNG (loss, re-sourcing, fuel switching, stock
+draw, runway) and naphtha (loss, re-sourcing, then straight into the cracker operating rate, with
+stock and downstream-polymer cover). Building them is what exposed both denominator errors
+corrected above.
+
+The naphtha channel's substitution capacity is **calibrated to reproduce April's observed 67.3%
+cracker rate**, so it fits that month by construction and is not an independent estimate — treat
+its level as anchored and its scenario *variation* as illustrative. China's naphtha exposure could
+not be sourced, so no Chinese naphtha result is produced rather than an invented one.
 
 **A caution on the CPI column.** These are sustained-shock scenarios measured against a no-shock
 baseline, not nowcasts. The base case shows Japanese CPI +2.49pp while realised core CPI is 1.8%
@@ -338,7 +354,9 @@ answer different questions and should not be read side by side without that cave
 | **Japan GDP, base case** | −3.01pp | **−1.81pp**, after recalibrating against IMF and GlobalData |
 | **Japan CPI, base case** | +2.49pp (Brent-driven only) | **+2.80pp**, split by fuel and matched to the realised print |
 | **Deliverability ceiling** | Pure assumption | **Calibrated** on the observed 0.75–1.1 mb/d draw |
-| **Sourced parameters** | 15 of 43 | **26 of 54** |
+| **Naphtha** | Not modelled at all | **Modelled:** cracker rate 67.3% (record low), 20-day stock = 138–160 days against the actual gap |
+| **Rationing coefficient** | Unanchored assumption | **Bracketed** by the electricity-curtailment literature above and the IMF benchmark below |
+| **Sourced parameters** | 15 of 43 | **35 of 66** |
 
 Two of those are corrections to claims this report previously made with more confidence than the
 evidence supported. The LNG one is the more serious: it inverted the report's central judgement
@@ -349,17 +367,16 @@ evidence standards warn about — quoting days of cover without stating what the
 
 In rough order of value:
 
-1. **Japanese naphtha stocks and cracker run rates.** Now the identified binding constraint, and
-   the one thing the model still cannot represent. This has displaced the pipeline and LNG
-   questions, both of which are now answered.
-2. **Whether the East–West pipeline restart holds.** The repair estimate is 5–6 weeks from 09-11,
+1. **Whether the East–West pipeline restart holds.** The repair estimate is 5–6 weeks from 09-11,
    so mid-to-late October is the test. A confirmed restart is the single most bullish thing that
    could happen to Asian supply.
-3. **Japanese crude imports and refinery runs after 2026-05-09.** Still missing, and still the
+2. **Japanese crude imports and refinery runs after 2026-05-09.** Still missing, and still the
    reason the crude runway carries a wide range.
-4. **Any hard read on Chinese reserve levels**, which remain estimated end to end.
-5. **A Japan-specific GDP elasticity per $10/bbl.** The model currently borrows a
-   major-importer midpoint because no Japan figure could be sourced.
+3. **Cracker rates after April 2026.** The naphtha channel is calibrated on one month; a second
+   observation would turn a fit into a test.
+4. **Any hard read on Chinese reserve levels**, and China's naphtha exposure — both still absent.
+5. **A Japan-specific GDP elasticity per $10/bbl.** The model borrows a major-importer midpoint
+   because no Japan figure could be sourced.
 
 ## Independent review
 
@@ -392,12 +409,14 @@ accordingly.
   revision closed the highest-value gaps (the pipeline, Chinese customs data, Japanese reserve and
   LNG levels, published GDP elasticities) but several series still stop in May–July 2026. Every
   remaining gap is marked `NA` in the data rather than filled by inference.
-- **26 of 54 model parameters are now sourced; 28 remain assumptions.** The GDP and CPI channels
+- **35 of 66 model parameters are now sourced; 31 remain assumptions.** The GDP and CPI channels
   are calibrated against published benchmarks (IMF, GlobalData) and, for Japanese CPI, against the
   realised print. The deliverability ceiling is calibrated on the observed draw rate. What is still
-  assumed and still matters: the rationing coefficient (the least-evidenced parameter in the
-  model), the LNG substitution and fuel-switching capacities, CPI energy weights, and a
-  Japan-specific GDP elasticity. All are listed under `assumptions` in
+  assumed and still matters: the LNG substitution and fuel-switching capacities, CPI energy
+  weights, China's naphtha exposure, and a Japan-specific GDP elasticity. The rationing
+  coefficient is no longer unanchored — the electricity-curtailment literature bounds it from
+  above (0.2–0.4 per 1% for a *less* substitutable input) and the IMF scenario from below — but it
+  is still a calibration rather than a measurement. All are listed under `assumptions` in
   `analysis/parameters.json` and tagged in the tracker's parameter table.
 - **Sourcing quality is mixed.** 389 observations carry a source URL and a quality label
   (`hard` / `est` / `calc`); 2% are unlabelled. Some figures come from aggregators rather than

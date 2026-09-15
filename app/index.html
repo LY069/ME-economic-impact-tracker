@@ -402,6 +402,23 @@ function runCountry(country, sc) {
   const involuntary = shortfall;
   const totalDD = voluntary + involuntary;
 
+  // Naphtha / petrochemical feedstock balance — mirrors scenario_model.py.
+  // No national reserve and no fuel-switching escape: unmet feedstock passes
+  // straight into the cracker operating rate.
+  const naph = c.naphtha || {};
+  let naphLossPct = null, naphGapPct = null, crackerRate = null,
+      naphStockDays = null, naphDownstreamDays = null;
+  if (naph.me_dependent_pct !== null && naph.me_dependent_pct !== undefined) {
+    naphLossPct = naph.me_dependent_pct * (1 - sc.hormuz_throughput_pct / 100);
+    naphGapPct = Math.max(0, naphLossPct - (naph.max_substitution_pct || 0));
+    crackerRate = Math.max(0, (naph.cracker_rate_prewar_pct || 0) - naphGapPct);
+    // Stock covers the LOST fraction, not total throughput.
+    if (naphGapPct > 0) {
+      naphStockDays = (naph.stock_days || 0) / (naphGapPct / 100);
+      naphDownstreamDays = (naph.downstream_buffer_days || 0) / (naphGapPct / 100);
+    }
+  }
+
   // LNG physical balance — mirrors run_country() in analysis/scenario_model.py.
   // Added because the study's conclusion is about LNG, yet the model used to
   // treat it as a pure price term.
@@ -463,6 +480,10 @@ function runCountry(country, sc) {
     voluntary_dd_kbd: voluntary, involuntary_dd_kbd: involuntary,
     total_dd_kbd: totalDD, dd_pct: demand ? totalDD / demand * 100 : 0,
     runway_weeks: runway, binding,
+    naphtha_supply_loss_pct: naphLossPct, naphtha_gap_pct: naphGapPct,
+    implied_cracker_rate_pct: crackerRate,
+    naphtha_stock_runway_days: naphStockDays,
+    naphtha_downstream_runway_days: naphDownstreamDays,
     lng_lost_mt_yr: lngLost, lng_substituted_mt_yr: lngSubst,
     lng_switched_mt_yr: lngSwitched, lng_unserved_mt_yr: lngGap,
     lng_runway_days: lngRunwayDays,
@@ -731,6 +752,16 @@ function renderScenario() {
       ['Demand destroyed', fmt(r.dd_pct, 1) + ' % of oil demand'],
       ['Reserve runway', r.runway_weeks === null ? 'no draw needed' : fmt(r.runway_weeks, 0) + ' weeks'],
       ['Binding constraint', r.binding],
+      ['Naphtha supply lost', r.naphtha_supply_loss_pct === null ? 'not modelled'
+        : fmt(r.naphtha_supply_loss_pct, 1) + ' % of supply'],
+      ['unmet after re-sourcing', r.naphtha_gap_pct === null ? '—'
+        : fmt(r.naphtha_gap_pct, 1) + ' % of supply'],
+      ['Implied cracker rate', r.implied_cracker_rate_pct === null ? '—'
+        : fmt(r.implied_cracker_rate_pct, 1) + ' %'],
+      ['Naphtha stock cover', r.naphtha_stock_runway_days === null ? 'no gap'
+        : fmt(r.naphtha_stock_runway_days, 0) + ' days'],
+      ['Polymer buffer cover', r.naphtha_downstream_runway_days === null ? 'no gap'
+        : fmt(r.naphtha_downstream_runway_days, 0) + ' days'],
       ['LNG supply lost', fmt(r.lng_lost_mt_yr, 2) + ' mt/yr'],
       ['re-sourced', fmt(r.lng_substituted_mt_yr, 2) + ' mt/yr'],
       ['met by fuel switching', fmt(r.lng_switched_mt_yr, 2) + ' mt/yr'],
