@@ -402,6 +402,20 @@ function runCountry(country, sc) {
   const involuntary = shortfall;
   const totalDD = voluntary + involuntary;
 
+  // LNG physical balance — mirrors run_country() in analysis/scenario_model.py.
+  // Added because the study's conclusion is about LNG, yet the model used to
+  // treat it as a pure price term.
+  const lngP = c.lng || {};
+  const lngImportMt = c.energy.lng_import_mt_yr;
+  const lngLost = lngImportMt * ((lngP.imports_via_hormuz_pct || 0) / 100) *
+                  (1 - sc.hormuz_throughput_pct / 100);
+  const lngSubst = Math.min(lngLost, lngP.max_substitution_mt_yr || 0);
+  const lngAfterSub = Math.max(0, lngLost - lngSubst);
+  const lngSwitched = Math.min(lngAfterSub, lngP.switchable_mt_yr || 0);
+  const lngGap = Math.max(0, lngAfterSub - lngSwitched);
+  const lngRunwayDays = (lngGap > 0 && lngP.stock_mt)
+    ? lngP.stock_mt / (lngGap / 365) : null;
+
   // Terms of trade, on delivered volume only — the rationed shortfall is
   // charged once as lost output below, not twice.
   const deliveredImportMbd = Math.max(0, c.energy.net_oil_import_mbd - involuntary / 1000);
@@ -428,7 +442,15 @@ function runCountry(country, sc) {
   const gdpPolicy = sc.policy_offset_active ? c.policy.gdp_support_pp : 0;
 
   const pctPrice = base.brent_usd_bbl ? dOil / base.brent_usd_bbl : 0;
-  const cpiDirect = c.cpi.energy_weight_pct / 100 * pctPrice * 100 * c.cpi.retail_energy_passthrough;
+  // Oil and gas pass through at very different rates: pump prices move within
+  // weeks, gas/electricity through regulated, lagged, subsidised tariffs.
+  // Mirrors the split in analysis/scenario_model.py.
+  const oilShare = c.cpi.oil_share_of_energy_basket ?? 1;
+  const gasPass = c.cpi.gas_retail_passthrough ?? c.cpi.retail_energy_passthrough;
+  const pctJkmCpi = base.jkm_usd_mmbtu ? dJkm / base.jkm_usd_mmbtu : 0;
+  const cpiDirect = c.cpi.energy_weight_pct / 100 * 100 * (
+    oilShare * pctPrice * c.cpi.retail_energy_passthrough +
+    (1 - oilShare) * pctJkmCpi * gasPass);
   const naphChange = base.naphtha_usd_t ? (sc.naphtha_usd_t - base.naphtha_usd_t) / base.naphtha_usd_t : 0;
   const cpiIndirect = naphChange * 100 * c.cpi.naphtha_to_cpi_beta;
   const cpiSubsidy = sc.policy_offset_active ? -c.policy.cpi_suppression_pp : 0;
@@ -441,6 +463,9 @@ function runCountry(country, sc) {
     voluntary_dd_kbd: voluntary, involuntary_dd_kbd: involuntary,
     total_dd_kbd: totalDD, dd_pct: demand ? totalDD / demand * 100 : 0,
     runway_weeks: runway, binding,
+    lng_lost_mt_yr: lngLost, lng_substituted_mt_yr: lngSubst,
+    lng_switched_mt_yr: lngSwitched, lng_unserved_mt_yr: lngGap,
+    lng_runway_days: lngRunwayDays,
     gdp_impact_pp: gdpTot + gdpRation + gdpPolicy,
     gdp_parts: { 'Terms of trade': gdpTot, 'Rationing': gdpRation, 'Policy support': gdpPolicy },
     cpi_impact_pp: cpiDirect + cpiIndirect + cpiSubsidy,
@@ -705,7 +730,13 @@ function renderScenario() {
       ['Rationed (involuntary)', fmt(r.involuntary_dd_kbd, 0) + ' kb/d'],
       ['Demand destroyed', fmt(r.dd_pct, 1) + ' % of oil demand'],
       ['Reserve runway', r.runway_weeks === null ? 'no draw needed' : fmt(r.runway_weeks, 0) + ' weeks'],
-      ['Binding constraint', r.binding]
+      ['Binding constraint', r.binding],
+      ['LNG supply lost', fmt(r.lng_lost_mt_yr, 2) + ' mt/yr'],
+      ['re-sourced', fmt(r.lng_substituted_mt_yr, 2) + ' mt/yr'],
+      ['met by fuel switching', fmt(r.lng_switched_mt_yr, 2) + ' mt/yr'],
+      ['LNG unserved', fmt(r.lng_unserved_mt_yr, 2) + ' mt/yr'],
+      ['LNG stock runway', r.lng_runway_days === null ? 'no gap to cover'
+        : fmt(r.lng_runway_days, 0) + ' days']
     ];
     return `<div>
       <h3 style="font-size:14px;margin:0 0 8px">${esc(name)}</h3>

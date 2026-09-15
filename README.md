@@ -3,7 +3,7 @@
 Quantitative assessment of how the 2026 Iran–US conflict's energy supply disruption is
 affecting **Japan** and **China**: growth, activity, trade and inflation.
 
-**As-of date: 2026-09-14.**
+**As-of date: 2026-09-15.**
 
 The study answers five questions:
 
@@ -81,6 +81,11 @@ fitted black box, so the assumptions can be argued with:
    the residual is rationed regardless of price. This is *involuntary* destruction and costs far
    more per barrel, because it destroys output instead of transferring income.
 4. **Reserve runway** — usable stock over the shortfall rate, bounded by maximum deliverability.
+
+An **LNG physical balance** runs alongside these: supply lost via Hormuz, re-sourcing, fuel
+switching in power, then the (very small) stock draw and a runway in days. It was added after the
+first revision concluded LNG was the binding constraint while modelling it as a price term only —
+building the channel showed the opposite, because only ~11% of Japan's LNG transits Hormuz.
 
 ```bash
 python3 analysis/scenario_model.py                      # print a summary
