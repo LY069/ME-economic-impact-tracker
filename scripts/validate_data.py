@@ -71,7 +71,11 @@ def check_observations(doc: dict) -> None:
         if not o.get("source_url"):
             unsourced += 1
         q = o.get("quality") or ""
-        if q not in VALID_QUALITY:
+        # A row whose value is genuinely missing is a deliberate gap marker.
+        # There is no figure to assign a confidence to, so requiring a quality
+        # label on it would only encourage inventing one.
+        is_gap = o.get("value") is None and o.get("parse") == "missing"
+        if q not in VALID_QUALITY and not is_gap:
             unlabelled += 1
         d = o.get("date") or ""
         if d:

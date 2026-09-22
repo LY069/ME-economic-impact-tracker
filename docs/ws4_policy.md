@@ -339,7 +339,7 @@ Japan's FY2026 growth forecast has been cut to +0.5% (from +0.8% pre-war),
 Q2 2026 GDP grew only 0.3% q/q (annualized ~1.1%, missing the 0.5% q/q
 consensus), with domestic demand subtracting 0.2pp even as exports added 0.5pp —
 consistent with energy-cost drag on households and firms despite the subsidy
-cushion. Tokyo core CPI reached 1.8% y/y in August 2026 (core-core 2.0%),
+cushion. Tokyo core CPI reached 1.8% y/y in August 2026 (core-core 2.0%) — note that Tokyo CPI is a distinct, narrower index leading the national print by about three weeks, so this is NOT the national July figure of 1.8% used elsewhere in this study, despite sharing a value —
 pushing the case for the BOJ's September hike; one third-party estimate (not
 government-confirmed) puts the combined effect of Japan's energy subsidies at
 **suppressing headline CPI by roughly 1.0 percentage point** versus an

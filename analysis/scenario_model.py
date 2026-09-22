@@ -27,6 +27,17 @@ Four channels are modelled:
 4. Reserve runway.  Usable stocks divided by the shortfall rate, subject to a
    maximum physical deliverability constraint.
 
+Two product-level physical balances run alongside them, because the crude
+channels alone missed the constraints that actually bind:
+
+* **LNG** - loss via Hormuz, re-sourcing, fuel switching in power, then the very
+  small stock draw.  Building this showed Japan's "12 days of LNG" was cover
+  against total consumption, not against the ~11% of supply actually at risk.
+* **Naphtha** - loss via Hormuz, re-sourcing, then straight into the cracker
+  operating rate.  There is no national naphtha reserve and no fuel-switching
+  escape, so this is where the shock shows up as lost output rather than as a
+  drawn-down buffer.
+
 All elasticities and baselines are loaded from parameters.json so that the
 provenance of every number is auditable and the web app can use the identical
 figures.  No parameter is hard-coded in this file.
@@ -108,6 +119,20 @@ class CountryResult:
     involuntary_demand_destruction_kbd: float
     total_demand_destruction_kbd: float
     demand_destruction_pct_of_demand: float
+
+    # naphtha / petrochemical feedstock balance
+    naphtha_supply_loss_pct: Optional[float]
+    naphtha_gap_pct: Optional[float]
+    implied_cracker_rate_pct: Optional[float]
+    naphtha_stock_runway_days: Optional[float]
+    naphtha_downstream_runway_days: Optional[float]
+
+    # LNG physical balance
+    lng_lost_mt_yr: float
+    lng_substituted_mt_yr: float
+    lng_switched_mt_yr: float
+    lng_unserved_mt_yr: float
+    lng_runway_days: Optional[float]
 
     # channel 4
     usable_reserve_mnbbl: float
@@ -206,6 +231,90 @@ def run_country(params: dict, country: str, sc: Scenario) -> CountryResult:
     involuntary_dd_kbd = shortfall_kbd
     total_dd_kbd = voluntary_dd_kbd + involuntary_dd_kbd
 
+    # ---- LNG physical balance -------------------------------------------
+    # Added because the study's own conclusion is that LNG, not crude, is the
+    # binding constraint — yet the model previously treated LNG as a pure price
+    # term. The order mirrors the crude channel: lose supply, re-source what
+    # you can, switch fuels, then draw the (very small) stock.
+    lng = c.get("lng") or {}
+    lng_import_mt = c["energy"]["lng_import_mt_yr"]
+    lng_lost_mt = lng_import_mt * (lng.get("imports_via_hormuz_pct", 0.0) / 100.0) \
+        * (1.0 - sc.hormuz_throughput_pct / 100.0)
+    lng_substituted_mt = min(lng_lost_mt, lng.get("max_substitution_mt_yr", 0.0))
+    lng_after_sub = max(0.0, lng_lost_mt - lng_substituted_mt)
+    # Fuel switching in power (gas -> coal/oil/nuclear) is the one clearly
+    # price-induced response visible in the realised data.
+    lng_switched_mt = min(lng_after_sub, lng.get("switchable_mt_yr", 0.0))
+    lng_gap_mt_yr = max(0.0, lng_after_sub - lng_switched_mt)
+
+    # LNG is working inventory, not a reserve: a handful of days, not months.
+    lng_stock_mt = lng.get("stock_mt")
+    if lng_gap_mt_yr > 0 and lng_stock_mt:
+        lng_runway_days = lng_stock_mt / (lng_gap_mt_yr / 365.0)
+    elif lng_gap_mt_yr > 0:
+        lng_runway_days = None   # gap exists but stock is not published
+    else:
+        lng_runway_days = None   # no gap to cover
+        notes.append(
+            "LNG shortfall is fully absorbed by re-sourcing and fuel switching at "
+            "this throughput, so no LNG stock draw is required."
+        )
+
+    # ---- Naphtha / petrochemical feedstock balance -----------------------
+    # This is the constraint the study concludes actually binds, so it belongs
+    # in the model rather than only in the narrative. Unlike crude there is no
+    # national reserve and no fuel-switching escape: a cracker cannot run on
+    # feedstock it does not have, so the unmet gap passes straight into the
+    # operating rate. The downstream polymer buffer is what delays the shock
+    # reaching end users.
+    # Exposure has TWO parts, and collapsing them to the directly-imported
+    # share alone understated it by about half. Japan imports ~40% of its
+    # naphtha from the Gulf directly, AND domestic refining supplies roughly
+    # another 40% of demand from crude that was 95% ME-sourced. The second part
+    # cannot simply be added at the Hormuz throughput rate, though: the crude
+    # channel above already determines how much crude actually arrives, so the
+    # refinery-derived slice is scaled by the realised run reduction instead.
+    # Adding both at full throughput sensitivity would double-count the same
+    # missing barrels.
+    naph = c.get("naphtha") or {}
+    naph_dep = naph.get("direct_import_me_pct")
+    if naph_dep is None:
+        naphtha_supply_loss_pct = None
+        naphtha_gap_pct = None
+        implied_cracker_rate_pct = None
+        naphtha_stock_runway_days = None
+        naphtha_downstream_runway_days = None
+    else:
+        direct_loss = naph_dep * (1.0 - sc.hormuz_throughput_pct / 100.0)
+        # Refinery-derived naphtha falls with the realised run reduction, which
+        # the crude channel has already computed as involuntary demand loss.
+        run_reduction = (
+            involuntary_dd_kbd / oil_demand_kbd if oil_demand_kbd else 0.0
+        )
+        refinery_loss = (naph.get("refinery_derived_share_pct") or 0.0) * run_reduction
+        naphtha_supply_loss_pct = direct_loss + refinery_loss
+        naphtha_gap_pct = max(
+            0.0, naphtha_supply_loss_pct - (naph.get("max_substitution_pct") or 0.0)
+        )
+        prewar_rate = naph.get("cracker_rate_prewar_pct") or 0.0
+        # Pass-through of an unmet feedstock gap into the operating rate. 1.0 is
+        # the Leontief bound (you cannot crack what you do not have); below 1.0
+        # represents inventory draw and yield flexibility at the cracker.
+        passthrough = naph.get("gap_to_cracker_passthrough")
+        if passthrough is None:
+            passthrough = 1.0
+        implied_cracker_rate_pct = max(0.0, prewar_rate - naphtha_gap_pct * passthrough)
+        # Stock covers the LOST fraction, not total throughput — the same
+        # distinction that made the earlier 12-day LNG reading wrong.
+        stock_days = naph.get("stock_days") or 0.0
+        naphtha_stock_runway_days = (
+            stock_days / (naphtha_gap_pct / 100.0) if naphtha_gap_pct > 0 else None
+        )
+        buffer_days = naph.get("downstream_buffer_days") or 0.0
+        naphtha_downstream_runway_days = (
+            buffer_days / (naphtha_gap_pct / 100.0) if naphtha_gap_pct > 0 else None
+        )
+
     # ---- Channel 1: terms of trade, on delivered volume only ------------
     # Net the import bill down by the barrels that never arrive, so the
     # rationed shortfall is charged once (as lost output in the GDP
@@ -269,7 +378,21 @@ def run_country(params: dict, country: str, sc: Scenario) -> CountryResult:
     # (packaging, plastics, processed goods) and utilities, net of subsidy.
     energy_weight = c["cpi"]["energy_weight_pct"] / 100.0
     retail_passthrough = c["cpi"]["retail_energy_passthrough"]
-    cpi_direct = energy_weight * pct_price_change * 100.0 * retail_passthrough
+    # The energy basket is part oil-linked (gasoline, kerosene) and part
+    # gas/electricity, so the price shock it feels is a weighted blend of Brent
+    # and JKM. Driving this off Brent alone understated the effect, since JKM
+    # has moved proportionally further than crude in this episode.
+    # Oil and gas pass through at very different rates: pump prices move within
+    # weeks, while gas and electricity reach households through regulated,
+    # lagged and directly subsidised tariffs. Applying one pass-through to both
+    # overstated CPI by roughly 2pp against Japan's realised print.
+    oil_share = c["cpi"].get("oil_share_of_energy_basket", 1.0)
+    gas_passthrough = c["cpi"].get("gas_retail_passthrough", retail_passthrough)
+    pct_jkm_change = (d_jkm / base_jkm) if base_jkm else 0.0
+    cpi_direct = energy_weight * 100.0 * (
+        oil_share * pct_price_change * retail_passthrough
+        + (1.0 - oil_share) * pct_jkm_change * gas_passthrough
+    )
 
     naph_base = params["baseline"]["naphtha_usd_t"]
     naph_change = (sc.naphtha_usd_t - naph_base) / naph_base if naph_base else 0.0
@@ -295,6 +418,20 @@ def run_country(params: dict, country: str, sc: Scenario) -> CountryResult:
         involuntary_demand_destruction_kbd=round(involuntary_dd_kbd, 1),
         total_demand_destruction_kbd=round(total_dd_kbd, 1),
         demand_destruction_pct_of_demand=round(dd_pct, 2),
+        naphtha_supply_loss_pct=(round(naphtha_supply_loss_pct, 2)
+                                 if naphtha_supply_loss_pct is not None else None),
+        naphtha_gap_pct=round(naphtha_gap_pct, 2) if naphtha_gap_pct is not None else None,
+        implied_cracker_rate_pct=(round(implied_cracker_rate_pct, 1)
+                                  if implied_cracker_rate_pct is not None else None),
+        naphtha_stock_runway_days=(round(naphtha_stock_runway_days, 1)
+                                   if naphtha_stock_runway_days is not None else None),
+        naphtha_downstream_runway_days=(round(naphtha_downstream_runway_days, 1)
+                                        if naphtha_downstream_runway_days is not None else None),
+        lng_lost_mt_yr=round(lng_lost_mt, 2),
+        lng_substituted_mt_yr=round(lng_substituted_mt, 2),
+        lng_switched_mt_yr=round(lng_switched_mt, 2),
+        lng_unserved_mt_yr=round(lng_gap_mt_yr, 2),
+        lng_runway_days=round(lng_runway_days, 1) if lng_runway_days is not None else None,
         usable_reserve_mnbbl=usable,
         runway_weeks=round(runway_weeks, 1) if runway_weeks is not None else None,
         runway_binding_constraint=binding,
@@ -383,6 +520,7 @@ def sensitivity(
                 "cpi_impact_pp": r.cpi_impact_pp,
                 "runway_weeks": r.runway_weeks,
                 "involuntary_dd_kbd": r.involuntary_demand_destruction_kbd,
+                "lng_unserved_mt_yr": r.lng_unserved_mt_yr,
             })
     return rows
 
