@@ -8100,7 +8100,7 @@
       "latest": null,
       "status": "stale",
       "last_error": "RuntimeError: empty series",
-      "last_attempt_at": "2026-09-22T11:32:42+00:00"
+      "last_attempt_at": "2026-09-23T11:29:25+00:00"
     },
     "wti_usd_bbl": {
       "label": "WTI crude",
@@ -8111,7 +8111,7 @@
       "latest": null,
       "status": "stale",
       "last_error": "RuntimeError: empty series",
-      "last_attempt_at": "2026-09-22T11:32:42+00:00"
+      "last_attempt_at": "2026-09-23T11:29:25+00:00"
     },
     "henry_hub_usd_mmbtu": {
       "label": "Henry Hub natural gas",
@@ -8122,7 +8122,7 @@
       "latest": null,
       "status": "stale",
       "last_error": "RuntimeError: empty series",
-      "last_attempt_at": "2026-09-22T11:32:42+00:00"
+      "last_attempt_at": "2026-09-23T11:29:25+00:00"
     },
     "usdjpy": {
       "label": "USD/JPY",
@@ -8133,7 +8133,7 @@
       "latest": null,
       "status": "stale",
       "last_error": "RuntimeError: empty series",
-      "last_attempt_at": "2026-09-22T11:32:42+00:00"
+      "last_attempt_at": "2026-09-23T11:29:25+00:00"
     },
     "usdcny": {
       "label": "USD/CNY",
@@ -8144,7 +8144,7 @@
       "latest": null,
       "status": "stale",
       "last_error": "RuntimeError: empty series",
-      "last_attempt_at": "2026-09-22T11:32:42+00:00"
+      "last_attempt_at": "2026-09-23T11:29:25+00:00"
     },
     "jp_cpi_yoy": {
       "label": "Japan CPI, all items, YoY",
@@ -8155,7 +8155,7 @@
       "latest": null,
       "status": "stale",
       "last_error": "RuntimeError: FRED_API_KEY not set",
-      "last_attempt_at": "2026-09-22T11:32:42+00:00"
+      "last_attempt_at": "2026-09-23T11:29:25+00:00"
     },
     "brent_spot_eia": {
       "label": "Brent spot (EIA official)",
@@ -8166,10 +8166,10 @@
       "latest": null,
       "status": "stale",
       "last_error": "RuntimeError: EIA_API_KEY not set",
-      "last_attempt_at": "2026-09-22T11:32:42+00:00"
+      "last_attempt_at": "2026-09-23T11:29:25+00:00"
     }
   },
-  "live_refreshed_at": "2026-09-22T11:32:42+00:00",
+  "live_refreshed_at": "2026-09-23T11:29:25+00:00",
   "live_status": {
     "refreshed": 0,
     "failed": 7,
